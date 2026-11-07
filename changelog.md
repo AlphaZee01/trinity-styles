@@ -2,7 +2,8 @@
 
 ## 2026-11-07
 
-- Vercel CLI is included as a dev dependency, with login, link, preview deploy, and production deploy scripts. Local asset folders used only for development are excluded from upload via `.vercelignore`.
+- Production is on Vercel at [https://trinity-styles.vercel.app](https://trinity-styles.vercel.app) (project **trinity-styles**). Supabase and rate-limit env vars are on the project; `NEXT_PUBLIC_APP_URL` points at the live URL. Vercel SSO deployment protection was turned off so the shop is public on the `.vercel.app` domain.
+- Vercel CLI is a dev dependency with `vercel:login`, `vercel:link`, `vercel:deploy`, and `vercel:prod` scripts. `scripts/push-env-to-vercel.mjs` syncs `.env.local` to Vercel. `.vercelignore` skips local-only folders (`pics`, `load`).
 
 ## 2026-11-04
 
