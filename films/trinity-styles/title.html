@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="brand.css">
+<style>
+  body { display: grid; place-items: center; }
+  main { display: grid; justify-items: center; text-align: center; }
+  img { width: 180px; height: auto; }
+  h1 { margin-top: 28px; font-size: 128px; }
+  p { margin-top: 22px; font-size: 36px; color: #5c6778; }
+</style>
+</head>
+<body>
+<main>
+  <img id="mark" src="assets/logo.png" alt="">
+  <h1 id="name">Trinity Styles</h1>
+  <p id="line">Contemporary clothing from Ghana</p>
+</main>
+<script type="module">
+const mark = document.getElementById("mark");
+const name = document.getElementById("name");
+const line = document.getElementById("line");
+
+function rise(t, start) {
+  const p = Math.min(1, Math.max(0, (t - start) / 0.7));
+  const e = 1 - (1 - p) ** 3;
+  return { opacity: e, shift: 28 * (1 - e) };
+}
+
+window.film = {
+  duration: 4.5,
+  frame(t) {
+    const a = rise(t, 0.15);
+    const b = rise(t, 0.45);
+    const c = rise(t, 0.85);
+    mark.style.opacity = a.opacity;
+    mark.style.translate = `0 ${a.shift}px`;
+    name.style.opacity = b.opacity;
+    name.style.translate = `0 ${b.shift}px`;
+    line.style.opacity = c.opacity;
+    line.style.translate = `0 ${c.shift}px`;
+  },
+};
+</script>
+</body>
+</html>

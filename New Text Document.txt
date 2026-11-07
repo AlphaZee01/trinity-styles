@@ -1,0 +1,204 @@
+# Project: Trinity Styles
+
+## Project Overview
+Build a complete, production-ready clothing e-commerce website and CRM system called **Trinity Styles**.
+
+Trinity Styles is a modern fashion store that lets customers browse clothing, virtually try on garments with AI, add items to cart, and pay securely. It also includes a full admin/CRM dashboard for managing products, orders, customers, and try-on analytics.
+
+**Important constraints:**
+- Fully custom (no Shopify, WooCommerce, or Medusa)
+- Backend & database: Supabase (Postgres + Auth + Storage)
+- Payments: Paystack
+- Virtual Try-On: RunPod Serverless API (hosting an open-source VTON model)
+- Hosting: Render (Next.js web service)
+- Frontend: Next.js 15/16 (App Router) + TypeScript + Tailwind CSS + shadcn/ui
+
+## Design Quality Requirement (Critical)
+
+You **must** install and actively use the skills from this repository when designing and building the UI:
+
+**https://github.com/emilkowalski/skills**
+
+Install them with:
+```bash
+npx skills@latest add emilkowalski/skills
+
+Use these skills throughout the project, especially:
+emil-design-eng (main design philosophy and UI polish)
+animate (for any motion)
+review-animations (strict review of all animations)
+find-animation-opportunities
+mobile-native (make the site feel native on phones)
+apple-design (fluid, physical motion principles)
+break-ui (test with worst-case data)
+pick-ui-library (when choosing components)
+The interface of Trinity Styles must feel polished, intentional, and high-craft — not generic AI-generated UI. Pay special attention to easing curves, durations, shadows vs borders, micro-interactions, loading states, and mobile behavior.Tech Stack (Strict)
+Frontend: Next.js 15/16 (App Router), TypeScript, Tailwind CSS, shadcn/ui, Lucide icons, Zustand (cart)
+Backend: Next.js API Routes + Server Actions
+Database / Auth / Storage: Supabase
+Payments: Paystack (initialize + webhook verification)
+Virtual Try-On: RunPod Serverless Endpoint (backend only)
+Hosting: Render
+Email (optional): Resend
+Toasts: Prefer Sonner (from Emil Kowalski)
+Core FeaturesCustomer-Facing Website
+Modern, mobile-first clothing storefront with high visual quality
+Product listing with filters (category, size, color, price)
+Product detail page with image gallery, size/color variants, stock status
+Virtual Try-On:
+“Try it on” button on product page
+User uploads a full-body photo (or uses camera)
+System sends person image + garment image to RunPod
+Displays realistic result with smooth loading/transition states
+User can save the result to “My Looks”
+
+Shopping cart (persistent)
+Checkout with shipping address
+Paystack payment flow (initialize → redirect → webhook → success page)
+User account: order history, saved looks, profile
+Wishlist / Saved Looks
+Excellent loading states, empty states, and micro-interactions
+Admin / CRM Dashboard (/admin)
+Secure admin-only access (role-based)
+Product management (CRUD + variants + images + stock)
+Order management (view, update status)
+Customer list with profiles
+Try-on analytics (most tried products, try-on → purchase conversion)
+Basic dashboard stats (revenue, orders, try-ons, top products)
+View a customer’s try-on history and order history
+Technical Requirements
+Proper Row Level Security (RLS) on all Supabase tables
+Never expose RunPod or Paystack secret keys to the client
+Secure Paystack webhook signature verification
+Rate limiting on try-on endpoint
+Optimistic UI where appropriate
+Strong TypeScript types
+Clean, modular code structure
+Environment variables properly handled
+Loading skeletons and error boundaries
+Follow Emil Kowalski’s design skills for all UI and motion decisions
+Database Schema (Supabase)Create these tables with proper relations, indexes, and RLS:
+profiles (extends auth.users)
+id, full_name, phone, avatar_url, role ('customer' | 'admin'), created_at
+
+products
+id, name, slug, description, base_price, category, images (text[]), is_active, created_at, updated_at
+
+product_variants
+id, product_id, size, color, sku, stock, price_override (nullable)
+
+orders
+id, user_id, status ('pending' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled'),
+total_amount, paystack_reference, shipping_address (jsonb), created_at
+
+order_items
+id, order_id, variant_id, quantity, price_at_purchase
+
+try_on_sessions
+id, user_id (nullable for guests), product_id, person_image_url, result_image_url,
+status ('pending' | 'processing' | 'completed' | 'failed'), runpod_job_id, created_at
+
+saved_looks
+id, user_id, try_on_session_id, product_id, created_at
+
+Storage buckets:
+product-images (public)
+user-photos (private)
+try-on-results (private or public with signed URLs)
+Key FlowsAuthentication
+Supabase Auth (email/password + optional Google)
+Profile creation on signup
+Protected routes for account and admin
+Virtual Try-On Flow
+User clicks “Try it on”
+Uploads photo → stored in Supabase Storage
+Frontend calls /api/try-on
+Backend creates a try_on_sessions record and calls RunPod
+Update session when result is ready
+Return result image with polished transition
+Allow saving the look
+Checkout + Paystack
+Create order with status pending and unique reference
+Call Paystack initialize
+Redirect user to Paystack
+Handle webhook at /api/paystack/webhook (verify signature)
+On success: update order, reduce stock, clear cart
+Success page verifies the transaction
+Admin Access
+Only users with role = 'admin' can access /admin/*
+Recommended Folder Structuretextapp/
+  (shop)/
+    page.tsx
+    products/
+    product/[slug]/
+    cart/
+    checkout/
+    account/
+      orders/
+      looks/
+  admin/
+    layout.tsx
+    page.tsx
+    products/
+    orders/
+    customers/
+  api/
+    try-on/route.ts
+    paystack/
+      initialize/route.ts
+      webhook/route.ts
+lib/
+  supabase/
+  paystack.ts
+  runpod.ts
+  types.ts
+components/
+  ui/
+  product/
+  cart/
+  try-on/
+  admin/
+hooks/
+store/Implementation PhasesPhase 1 – Foundation
+Next.js project + Tailwind + shadcn/ui
+Install Emil Kowalski skills (npx skills@latest add emilkowalski/skills)
+Supabase project + schema + RLS
+Auth + profiles
+Basic layout and navigation (apply design skills)
+Phase 2 – Catalog
+Products + variants CRUD (admin)
+Public product listing and detail pages
+Image upload to Supabase Storage
+High-quality product UI following design skills
+Phase 3 – Cart & Checkout
+Zustand cart
+Checkout form
+Paystack initialize + webhook + success flow
+Phase 4 – Virtual Try-On
+RunPod integration
+Try-on UI on product page (smooth states and transitions)
+Save looks + try-on history
+Phase 5 – CRM / Admin
+Admin dashboard stats
+Order management
+Customer list + try-on analytics
+Role protection
+Phase 6 – Polish & Design Review
+Apply review-animations and break-ui skills
+Loading states, empty states, micro-interactions
+Mobile-native refinements
+Final design polish using emil-design-eng
+Non-Functional Requirements
+Type-safe throughout
+Clean separation of concerns
+Proper error handling and user feedback
+Secure (no secret keys on client, RLS enabled, webhook verification)
+High design craft (following Emil Kowalski skills)
+Scalable structure
+Deliverables
+Full working codebase for Trinity Styles
+.env.example with all required variables
+SQL migration file(s) for the schema + RLS
+Clear README with setup instructions (Supabase, Paystack, RunPod, Render, and skills installation)
+Basic seed data for products
+Start by scaffolding the Next.js project, installing the Emil Kowalski skills, setting up Supabase connection, and creating the database schema with RLS. Then proceed phase by phase, applying the design skills at every UI decision.

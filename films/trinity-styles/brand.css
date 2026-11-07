@@ -1,0 +1,29 @@
+html, body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #eef3fb;
+  color: #1c2430;
+  font-family: Georgia, "Segoe UI", sans-serif;
+}
+
+.kicker {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #2f4db5;
+}
+
+h1, h2 {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+p {
+  margin: 0;
+}

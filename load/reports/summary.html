@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Trinity Styles — production load</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 2rem auto; max-width: 56rem; color: #1c2430; background: #f6f8fc; }
+    h1, h2 { font-weight: 500; letter-spacing: -0.02em; }
+    p { line-height: 1.5; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid #e4e8f0; }
+    th { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 1rem 0; }
+    .card { background: white; border-radius: 1rem; padding: 1rem; }
+    .card span, .muted { color: #5c6778; }
+    .card span { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .card strong { display: block; font-size: 1.6rem; margin-top: 0.25rem; }
+    .card em { color: #5c6778; font-style: normal; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Production load</h1>
+  <p class="muted">k6 against the production server on http://127.0.0.1:3001. The warm-up opened the home page, the shop, every product, the bag, and login once, and those requests are left out. A page counts as rendered only when the response contains its real text. Orders and virtual try-on were not used. This is the document response, not a full browser.</p>
+  <p>The home page median was 688 ms for one shopper and 900 ms for fifty.</p>
+  <section>
+  <h2>One shopper</h2>
+  <p>Eight visits, one after another, after a warm-up that is not included here.</p>
+  <div class="cards">
+    <div class="card"><span>Visits finished</span><strong>8</strong><em>8 started</em></div>
+    <div class="card"><span>Cut off</span><strong>0</strong></div>
+    <div class="card"><span>Pages rendered</span><strong>40</strong></div>
+    <div class="card"><span>Timeouts</span><strong>0</strong></div>
+    <div class="card"><span>HTTP errors</span><strong>0</strong></div>
+    <div class="card"><span>Wrong content</span><strong>0</strong></div>
+  </div>
+  <table>
+    <tr><th>Page</th><th>Rendered</th><th>Timeout</th><th>HTTP error</th><th>Wrong content</th><th>Median</th><th>p95</th><th>Slowest</th><th>Server wait</th></tr>
+    <tr><td>Home</td><td>8</td><td>0</td><td>0</td><td>0</td><td>688 ms</td><td>756 ms</td><td>764 ms</td><td>14 ms</td></tr><tr><td>Shop</td><td>8</td><td>0</td><td>0</td><td>0</td><td>715 ms</td><td>770 ms</td><td>786 ms</td><td>17 ms</td></tr><tr><td>Product</td><td>8</td><td>0</td><td>0</td><td>0</td><td>686 ms</td><td>723 ms</td><td>737 ms</td><td>18 ms</td></tr><tr><td>Bag</td><td>8</td><td>0</td><td>0</td><td>0</td><td>713 ms</td><td>1.02 s</td><td>1.17 s</td><td>18 ms</td></tr><tr><td>Login</td><td>8</td><td>0</td><td>0</td><td>0</td><td>695 ms</td><td>721 ms</td><td>725 ms</td><td>17 ms</td></tr>
+  </table>
+  <p class="muted">Median, p95, and slowest count only pages that contained the expected content. A timeout is not folded into those times.</p>
+</section>
+  <section>
+  <h2>Fifty shoppers</h2>
+  <p>Fifty people at once for 60 seconds. Visits already underway were given another 90 seconds to finish.</p>
+  <div class="cards">
+    <div class="card"><span>Visits finished</span><strong>385</strong><em>385 started</em></div>
+    <div class="card"><span>Cut off</span><strong>0</strong></div>
+    <div class="card"><span>Pages rendered</span><strong>1925</strong></div>
+    <div class="card"><span>Timeouts</span><strong>0</strong></div>
+    <div class="card"><span>HTTP errors</span><strong>0</strong></div>
+    <div class="card"><span>Wrong content</span><strong>0</strong></div>
+  </div>
+  <table>
+    <tr><th>Page</th><th>Rendered</th><th>Timeout</th><th>HTTP error</th><th>Wrong content</th><th>Median</th><th>p95</th><th>Slowest</th><th>Server wait</th></tr>
+    <tr><td>Home</td><td>385</td><td>0</td><td>0</td><td>0</td><td>900 ms</td><td>2.91 s</td><td>4.48 s</td><td>63 ms</td></tr><tr><td>Shop</td><td>385</td><td>0</td><td>0</td><td>0</td><td>901 ms</td><td>1.35 s</td><td>1.63 s</td><td>77 ms</td></tr><tr><td>Product</td><td>385</td><td>0</td><td>0</td><td>0</td><td>892 ms</td><td>1.13 s</td><td>1.79 s</td><td>77 ms</td></tr><tr><td>Bag</td><td>385</td><td>0</td><td>0</td><td>0</td><td>827 ms</td><td>1.04 s</td><td>1.42 s</td><td>45 ms</td></tr><tr><td>Login</td><td>385</td><td>0</td><td>0</td><td>0</td><td>832 ms</td><td>983 ms</td><td>1.62 s</td><td>45 ms</td></tr>
+  </table>
+  <p class="muted">Median, p95, and slowest count only pages that contained the expected content. A timeout is not folded into those times.</p>
+</section>
+</body>
+</html>
