@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { isServiceRoleConfigured } from "@/lib/env";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const visitorCookie = "ts_visitor";
@@ -16,6 +17,9 @@ function shopPath(value: unknown) {
 
 export async function POST(request: Request) {
   if (!isServiceRoleConfigured()) return new NextResponse(null, { status: 204 });
+  if (!rateLimit(`analytics:${clientIp(request)}`, 60, 60_000).ok) {
+    return new NextResponse(null, { status: 204 });
+  }
 
   let payload: { path?: unknown };
   try {

@@ -18,7 +18,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Moolre is not configured" }, { status: 503 });
   }
 
-  const payload = (await request.json()) as MoolreWebhook;
+  let payload: MoolreWebhook;
+  try {
+    payload = (await request.json()) as MoolreWebhook;
+  } catch {
+    return NextResponse.json({ error: "Invalid callback" }, { status: 400 });
+  }
   const data = payload.data;
   if (!data?.externalref || !validateWebhookSecret(data.secret)) {
     return NextResponse.json({ error: "Invalid callback" }, { status: 401 });

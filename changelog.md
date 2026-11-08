@@ -2,6 +2,12 @@
 
 ## 2026-11-08
 
+- Stock adjustment functions can be called only with the service role. Anonymous and signed-in shoppers can no longer run them through the database API.
+- Shop responses send frame, content-type, referrer, permissions, content-security, and HTTPS headers. The Moolre webhook secret is compared in constant time.
+- Checkout, address lookup, and page-view recording are rate limited. Product and try-on uploads are capped at 8 MB. Try-on photos must be an upload or the signed-in customer's own storage path.
+- Admin pages and product writes stay closed in production when Supabase is not configured. Auth return paths stay on this site.
+
+- A finished virtual try-on shows a solid toast along the bottom with an animated winking face, a compliment, and an Add to bag button. The portrait frame stays reserved for the try-on photo, with a note to retry or change the picture when the model changes the wrong place.
 - Try-on AI is no longer a tab on the admin phone bar. It stays in the desktop admin menu.
 - Removing a piece from the bag shows a red toast with the piece name, size, and colour. Adding one stays green.
 - Sign out asks for confirmation first. Cancel keeps the session. Confirm ends it. The bag stays on the device.

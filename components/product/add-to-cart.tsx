@@ -85,7 +85,8 @@ export function AddToCart({
   const tagline = notes.map((note) => note.title).join(". ");
 
   function addToBag() {
-    if (!variant || !inStock || added) return;
+    if (!variant || !inStock) return "unavailable" as const;
+    if (added) return "already" as const;
     addItem({
       variantId: variant.id,
       productId: product.id,
@@ -101,6 +102,7 @@ export function AddToCart({
     toast.success("Added to bag", {
       description: `${product.name} · ${variant.size}, ${variant.color}`,
     });
+    return "added" as const;
   }
 
   return (
@@ -223,7 +225,7 @@ export function AddToCart({
         ))}
       </ul>
 
-      <TryOnPanel product={product} open={tryOnOpen} onOpenChange={setTryOnOpen} />
+      <TryOnPanel product={product} open={tryOnOpen} onOpenChange={setTryOnOpen} onAddToBag={addToBag} />
     </div>
   );
 }

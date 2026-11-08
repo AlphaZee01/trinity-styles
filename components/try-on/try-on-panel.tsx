@@ -15,6 +15,9 @@ type SessionState = {
   resultImageUrl: string | null;
 };
 
+const portraitFrame =
+  "glass relative mx-auto aspect-[3/4] h-[min(28rem,52dvh)] w-auto max-w-full overflow-hidden rounded-2xl bg-muted";
+
 const GENERATING_MESSAGES = [
   "Applying the garment to your photo…",
   "This usually takes 10–30 seconds.",
@@ -22,14 +25,62 @@ const GENERATING_MESSAGES = [
   "Keep this screen open until it finishes.",
 ];
 
+function WinkIcon() {
+  const [reduceMotion, setReduceMotion] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setReduceMotion(query.matches);
+    apply();
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, []);
+  return (
+    <img
+      src={reduceMotion ? "/icons/winking-face-3d.png" : "/icons/winking-face-3d.webp"}
+      alt=""
+      width={36}
+      height={36}
+      className="try-on-wink"
+    />
+  );
+}
+
+function complimentLook(productName: string, sessionId: string, onAddToBag?: () => "added" | "already" | "unavailable") {
+  toast("This suits you", {
+    id: `try-on-${sessionId}`,
+    className: "try-on-toast",
+    position: "bottom-center",
+    description: `${productName} looks right on you. Order it.`,
+    duration: 8000,
+    icon: <WinkIcon />,
+    action: onAddToBag
+      ? {
+          label: "Add to bag",
+          onClick: (event) => {
+            const result = onAddToBag();
+            if (result === "added") return;
+            event.preventDefault();
+            if (result === "already") {
+              toast("Already in your bag", { description: productName });
+            } else {
+              toast.error("That size is out of stock.");
+            }
+          },
+        }
+      : undefined,
+  });
+}
+
 export function TryOnPanel({
   product,
   open,
   onOpenChange,
+  onAddToBag,
 }: {
   product: ProductWithVariants;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onAddToBag?: () => "added" | "already" | "unavailable";
 }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -234,6 +285,9 @@ export function TryOnPanel({
       if (result.status === "failed") {
         throw new Error(result.error ?? "The model could not finish this look.");
       }
+      if (result.status === "completed" && result.resultImageUrl) {
+        complimentLook(product.name, result.sessionId, onAddToBag);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Try-on failed";
       setSession(null);
@@ -358,14 +412,14 @@ export function TryOnPanel({
 
       <div className={`mt-4 grid gap-3 ${cameraOn || generating || ready ? "grid-cols-1" : "grid-cols-2"}`}>
         {cameraOn ? (
-          <figure className="glass relative h-64 overflow-hidden rounded-2xl bg-muted">
+          <figure className={portraitFrame}>
             <span className="glass absolute top-2 left-2 z-10 rounded-full px-2 py-1 text-[10px] tracking-wide uppercase">
               Camera
             </span>
             <video ref={videoRef} className="size-full object-cover" autoPlay muted playsInline />
           </figure>
         ) : generating ? (
-          <figure className="glass relative h-64 overflow-hidden rounded-2xl bg-muted">
+          <figure className={portraitFrame}>
             {garment ? <Image src={garment} alt="" fill sizes="100vw" className="object-cover opacity-25" /> : null}
             <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
               <Loader2 className="size-8 animate-spin text-primary" aria-hidden="true" />
@@ -388,8 +442,9 @@ export function TryOnPanel({
             </div>
           </figure>
         ) : ready ? (
+          <>
           <figure
-            className="glass relative h-64 overflow-hidden rounded-2xl bg-muted select-none"
+            className={`${portraitFrame} select-none`}
             onPointerDown={() => preview && setCompare(true)}
             onPointerUp={() => setCompare(false)}
             onPointerLeave={() => setCompare(false)}
@@ -416,6 +471,10 @@ export function TryOnPanel({
               </button>
             ) : null}
           </figure>
+          <p className="rounded-2xl bg-muted px-3 py-2.5 text-sm leading-relaxed text-muted-foreground">
+            Sometimes the model changes a place it should leave alone. Retry the try-on for a better result, or change the picture.
+          </p>
+          </>
         ) : (
           <>
             <figure className="glass relative h-52 overflow-hidden rounded-2xl bg-muted">
@@ -574,14 +633,19 @@ export function TryOnPanel({
           )}
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <button type="button" onClick={saveLook} disabled={saved} className="press h-12 rounded-full bg-foreground text-background disabled:opacity-60">
-            {saved ? "Saved" : "Save look"}
-          </button>
-          <button type="button" onClick={reset} className="press h-12 rounded-full border border-primary text-primary">
-            Try another
-          </button>
-        </div>
+        <>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <button type="button" onClick={saveLook} disabled={saved} className="press col-span-2 h-12 rounded-full bg-foreground text-background disabled:opacity-60">
+              {saved ? "Saved" : "Save look"}
+            </button>
+            <button type="button" onClick={startTryOn} className="press h-12 rounded-full border border-primary text-primary">
+              Retry
+            </button>
+            <button type="button" onClick={choosePhoto} className="press glass h-12 rounded-full text-sm">
+              Change photo
+            </button>
+          </div>
+        </>
       )}
 
       <p className="mt-3 text-center text-xs text-muted-foreground">

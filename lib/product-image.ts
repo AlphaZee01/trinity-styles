@@ -3,7 +3,7 @@ import sharp from "sharp";
 const MAX_EDGE = 1600;
 
 export async function prepareProductImage(input: Buffer) {
-  const bytes = await sharp(input, { failOn: "none" })
+  const bytes = await sharp(input, { failOn: "none", limitInputPixels: 24_000_000 })
     .rotate()
     .resize({
       width: MAX_EDGE,

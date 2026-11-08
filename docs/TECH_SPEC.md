@@ -77,3 +77,5 @@ Multi-garment try-on, Replicate/IDM-VTON, AI size recommendation, credits/vendor
 - RLS on all public tables
 - Moolre webhook callback secret verification
 - Try-on rate limiting by IP and user id
+- Stock RPCs are not executable by `anon` or `authenticated`
+- Security headers on every response (frame denial, nosniff, referrer policy, content security policy, HSTS)

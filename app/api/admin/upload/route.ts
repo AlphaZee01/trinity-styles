@@ -5,7 +5,11 @@ import { prepareProductImage } from "@/lib/product-image";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
-  if (isSupabaseConfigured()) {
+  if (!isSupabaseConfigured()) {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json({ error: "Admin only" }, { status: 403 });
+    }
+  } else {
     const { role } = await getAuthContext();
     if (role !== "admin") {
       return NextResponse.json({ error: "Admin only" }, { status: 403 });
@@ -19,6 +23,9 @@ export async function POST(request: Request) {
   const file = form.get("file");
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "Choose an image" }, { status: 400 });
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    return NextResponse.json({ error: "Image must be 8 MB or smaller." }, { status: 400 });
   }
 
   let prepared;

@@ -4,7 +4,11 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { upsertProduct, type ProductPayload } from "@/lib/admin-data";
 
 export async function POST(request: Request) {
-  if (isSupabaseConfigured()) {
+  if (!isSupabaseConfigured()) {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json({ error: "Admin only" }, { status: 403 });
+    }
+  } else {
     const { role } = await getAuthContext();
     if (role !== "admin") {
       return NextResponse.json({ error: "Admin only" }, { status: 403 });

@@ -174,5 +174,7 @@ products.slug unique, products.category, product_variants.product_id, orders.use
 
 ## Stock RPCs (service role only)
 
+Execute is granted only to `service_role`. `anon` and `authenticated` cannot call these functions.
+
 - `decrement_stock_for_order(order_id)` — subtracts line quantities when payment is fulfilled; returns false if any variant is short
 - `restore_stock_for_order(order_id)` — adds quantities back when a paid order is cancelled

@@ -51,6 +51,7 @@ export async function requireUser() {
 
 export async function requireAdmin() {
   if (!isSupabaseConfigured()) {
+    if (process.env.NODE_ENV === "production") redirect("/login");
     return { userId: demoAdminProfile.id, role: "admin" as UserRole, profile: demoAdminProfile };
   }
   const ctx = await requireUser();

@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { safeNext } from "@/lib/safe-next";
 import { updateSession } from "@/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
@@ -8,8 +9,7 @@ export async function proxy(request: NextRequest) {
   if (code && path !== "/auth/callback") {
     const callback = new URL("/auth/callback", request.url);
     callback.searchParams.set("code", code);
-    const next = request.nextUrl.searchParams.get("next");
-    const destination = next && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
+    const destination = safeNext(request.nextUrl.searchParams.get("next"));
     callback.searchParams.set("next", destination);
     const redirectResponse = NextResponse.redirect(callback);
     supabaseResponse.cookies.getAll().forEach((cookie) => {

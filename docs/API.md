@@ -90,7 +90,7 @@ Response: `{ "city": "string", "region": "string", "address_line": "string", "ap
 
 ## POST /api/analytics
 
-Auth: none. Records one shop page view for the admin dashboard.
+Auth: none. Records one shop page view for the admin dashboard. Limited to 60 writes per minute per IP.
 
 Request: `{ "path": "/products" }`
 
@@ -100,7 +100,9 @@ Request: `{ "path": "/products" }`
 
 Auth: optional (guests allowed).
 
-Request: `{ "productId": "uuid", "personImagePath": "string", "garmentImageUrl": "string" }`
+Request: `{ "productId": "uuid", "personImagePath": "user-id/file.jpg", "garmentImageUrl": "string" }` or multipart with `personImage`.
+
+`personImagePath` is optional and only for a signed-in customer. It must be an object path in the private `user-photos` bucket under that customer's own folder. Guests send the photo in the multipart body. The server signs the path; it does not fetch an arbitrary URL.
 
 `garmentImageUrl` is optional. When it is sent, it must be one of that product's photos. Otherwise the try-on uses the first photo.
 

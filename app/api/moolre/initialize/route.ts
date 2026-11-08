@@ -9,6 +9,7 @@ import {
   normalizeMoMoPhone,
   type MoolreChannel,
 } from "@/lib/moolre";
+import { rateLimit } from "@/lib/rate-limit";
 import { getShopSettingsRow } from "@/lib/shop-settings";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ShippingAddress } from "@/lib/types";
@@ -57,6 +58,9 @@ export async function POST(request: Request) {
   const { userId } = await getAuthContext();
   if (!userId) {
     return NextResponse.json({ error: "Sign in to checkout." }, { status: 401 });
+  }
+  if (!rateLimit(`checkout:${userId}`, 8, 10 * 60_000).ok) {
+    return NextResponse.json({ error: "Too many payment attempts. Wait a few minutes." }, { status: 429 });
   }
   if (!isMoolreConfigured() || !isServiceRoleConfigured()) {
     return NextResponse.json(

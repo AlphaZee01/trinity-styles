@@ -16,6 +16,20 @@ import { startTryOnJob } from "@/lib/runpod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createMemorySession } from "@/lib/try-on-memory";
 
+const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
+
+function ownedPhotoPath(path: string, userId: string | null) {
+  if (!userId) return false;
+  if (!path || path.includes("..") || path.includes("\\") || path.includes("://") || path.startsWith("/")) {
+    return false;
+  }
+  return path.startsWith(`${userId}/`);
+}
+
+function localPersonImage(path: string) {
+  return path.startsWith("data:image/jpeg") || path.startsWith("data:image/png") || path.startsWith("data:image/webp");
+}
+
 export async function POST(request: Request) {
   const limits = tryOnRateLimit();
   const { userId } = await getAuthContext().catch(() => ({ userId: null }));
@@ -38,6 +52,9 @@ export async function POST(request: Request) {
     requestedGarment = String(form.get("garmentImageUrl") ?? "");
     const file = form.get("personImage");
     if (file instanceof File) {
+      if (file.size > MAX_PHOTO_BYTES) {
+        return NextResponse.json({ error: "Photo must be 8 MB or smaller." }, { status: 400 });
+      }
       uploadedBytes = await file.arrayBuffer();
       uploadedType = file.type || "image/jpeg";
     }
@@ -72,9 +89,11 @@ export async function POST(request: Request) {
   const maxPollAttempts = maxPollAttemptsFromSettings(pollIntervalMs);
 
   if (!isServiceRoleConfigured()) {
-    const personUrl =
-      personImagePath ||
-      (uploadedBytes ? `data:${uploadedType};base64,${Buffer.from(uploadedBytes).toString("base64")}` : "");
+    const personUrl = localPersonImage(personImagePath)
+      ? personImagePath
+      : uploadedBytes
+        ? `data:${uploadedType};base64,${Buffer.from(uploadedBytes).toString("base64")}`
+        : "";
     if (!personUrl) {
       return NextResponse.json({ error: "A person photo is required." }, { status: 400 });
     }
@@ -107,6 +126,15 @@ export async function POST(request: Request) {
     }
     const signed = await admin.storage.from("user-photos").createSignedUrl(path, 60 * 60);
     personImageUrl = signed.data?.signedUrl ?? path;
+  } else if (personImagePath) {
+    if (!ownedPhotoPath(personImagePath, userId)) {
+      return NextResponse.json({ error: "A person photo is required." }, { status: 400 });
+    }
+    const signed = await admin.storage.from("user-photos").createSignedUrl(personImagePath, 60 * 60);
+    if (!signed.data?.signedUrl) {
+      return NextResponse.json({ error: "A person photo is required." }, { status: 400 });
+    }
+    personImageUrl = signed.data.signedUrl;
   }
 
   if (!personImageUrl) {

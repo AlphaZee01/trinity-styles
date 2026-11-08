@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthContext } from "@/lib/auth";
+import { rateLimit } from "@/lib/rate-limit";
 
 type NominatimAddress = {
   house_number?: string;
@@ -69,6 +70,9 @@ export async function GET(request: Request) {
   const { userId } = await getAuthContext();
   if (!userId) {
     return NextResponse.json({ error: "Sign in to fill an address." }, { status: 401 });
+  }
+  if (!rateLimit(`address:${userId}`, 20, 60_000).ok) {
+    return NextResponse.json({ error: "Too many location lookups. Wait a moment." }, { status: 429 });
   }
 
   const { searchParams } = new URL(request.url);

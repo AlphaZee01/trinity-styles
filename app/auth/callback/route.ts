@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
+import { safeNext } from "@/lib/safe-next";
 import { createClient } from "@/lib/supabase/server";
-
-function safeNext(value: string | null) {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/account";
-  return value;
-}
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

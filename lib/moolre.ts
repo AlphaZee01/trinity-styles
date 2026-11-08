@@ -1,3 +1,4 @@
+import { createHash, timingSafeEqual } from "node:crypto";
 import {
   getMoolreAccountNumber,
   getMoolreApiPubKey,
@@ -149,5 +150,7 @@ export function isPaymentFailed(status: MoolreApiResponse) {
 export function validateWebhookSecret(secret: string | undefined) {
   const expected = getMoolreWebhookSecret();
   if (!expected || !secret) return false;
-  return secret === expected;
+  const actualHash = createHash("sha256").update(secret).digest();
+  const expectedHash = createHash("sha256").update(expected).digest();
+  return timingSafeEqual(actualHash, expectedHash);
 }
