@@ -398,6 +398,30 @@ export async function upsertProduct(id: string | null, payload: ProductPayload) 
   return productId;
 }
 
+export async function deleteProduct(id: string) {
+  if (!isServiceRoleConfigured()) {
+    throw new Error("Connect Supabase with a service role key to manage products.");
+  }
+  const admin = createAdminClient();
+  const { data: variants, error: variantError } = await admin.from("product_variants").select("id").eq("product_id", id);
+  if (variantError) throw new Error(variantError.message);
+  const variantIds = (variants ?? []).map((variant) => variant.id);
+  if (variantIds.length) {
+    const { count, error: orderError } = await admin
+      .from("order_items")
+      .select("id", { count: "exact", head: true })
+      .in("variant_id", variantIds);
+    if (orderError) throw new Error(orderError.message);
+    if (count) throw new Error("This piece is on an order, so it stays in the catalog.");
+  }
+  const { error: looksError } = await admin.from("saved_looks").delete().eq("product_id", id);
+  if (looksError) throw new Error(looksError.message);
+  const { error: sessionsError } = await admin.from("try_on_sessions").delete().eq("product_id", id);
+  if (sessionsError) throw new Error(sessionsError.message);
+  const { error } = await admin.from("products").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 type TryOnUsageRow = {
   status: TryOnSession["status"];
   user_id: string | null;

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getAuthContext } from "@/lib/auth";
 import { isServiceRoleConfigured } from "@/lib/env";
 import { getProductById } from "@/lib/products";
-import { clientIp } from "@/lib/rate-limit";
 import { enforceTryOnRateLimit } from "@/lib/try-on-rate-db";
 import { tryOnRateLimit } from "@/lib/env";
 import { buildTryOnProductContext } from "@/lib/try-on-product-context";
@@ -33,7 +32,10 @@ function localPersonImage(path: string) {
 export async function POST(request: Request) {
   const limits = tryOnRateLimit();
   const { userId } = await getAuthContext().catch(() => ({ userId: null }));
-  const bucket = userId ? `user:${userId}` : `ip:${clientIp(request)}`;
+  if (!userId) {
+    return NextResponse.json({ error: "Sign in to try this on." }, { status: 401 });
+  }
+  const bucket = `user:${userId}`;
   const limited = await enforceTryOnRateLimit(bucket, limits.max, limits.windowMs);
   if (!limited.ok) {
     return NextResponse.json({ error: "Too many try-on requests. Wait a moment." }, { status: 429 });
@@ -112,7 +114,7 @@ export async function POST(request: Request) {
   }
 
   const admin = createAdminClient();
-  const folder = userId ?? "guest";
+  const folder = userId;
   let personImageUrl = personImagePath;
 
   if (uploadedBytes) {

@@ -28,7 +28,7 @@ Market: Ghana. Currency: GHS. Locale: en-GH.
 - Mobile-first storefront
 - Product listing with filters: category, size, color, price
 - Product detail: gallery, size/color variants, stock
-- Virtual try-on on product page (upload or camera, result, save look)
+- Virtual try-on on product page for a signed-in customer (upload or camera, result, save look)
 - Persistent shopping cart
 - Checkout with shipping address and flat delivery fee in GHS (admin-configured)
 - Moolre: initiate collection on phone → webhook callback → success page (status poll as backup)
@@ -51,7 +51,7 @@ Market: Ghana. Currency: GHS. Locale: en-GH.
 
 ## Success criteria
 
-- Guest can browse and try on without an account
+- Guest can browse without an account. Virtual try-on requires sign-in.
 - Authenticated customer can complete Moolre Mobile Money checkout in GHS
 - Admin-only routes cannot be accessed by customers
 - Secrets (Moolre, RunPod, service role) never reach the client

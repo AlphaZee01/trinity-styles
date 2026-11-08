@@ -44,6 +44,7 @@ Use Supabase CLI (`supabase migration new`) for new migrations. Do not invent ex
 - images text[]
 - is_active boolean default true
 - created_at, updated_at timestamptz
+- An admin can delete a product after confirming. The piece stays if an order already includes one of its sizes. Wishlist rows go with it. Try-on sessions for that piece are removed. Past orders are kept.
 
 ### product_variants
 
@@ -63,6 +64,7 @@ Use Supabase CLI (`supabase migration new`) for new migrations. Do not invent ex
 - paystack_reference text unique (payment provider external reference, Moolre `externalref`)
 - shipping_address jsonb — `full_name`, `phone`, `city`, `region`, `address_line`, `notes`, optional `momo_phone` for the MoMo wallet charged
 - tracking_number text nullable — set by admin when shipped
+- An admin can delete an order after confirming. Line items go with it. Stock that the order had taken, and not already restored, goes back on the shelf. The Mobile Money payment is not refunded.
 - stock_restored_at timestamptz nullable — set when cancelled and stock was put back
 - created_at timestamptz
 
@@ -152,7 +154,7 @@ products.slug unique, products.category, product_variants.product_id, orders.use
 - product_variants: public select for active parent products; admin write
 - profiles: select/update own row; cannot update role; admin select all
 - orders / order_items: select own; writes via service role
-- try_on_sessions: owner select; guest rows only via service role APIs
+- try_on_sessions: owner select; a session is created only for a signed-in customer, through the service role
 - try_on_settings: no client access; service role only
 - shop_settings: no client access; service role only
 - try_on_rate_events: no client access; service role only

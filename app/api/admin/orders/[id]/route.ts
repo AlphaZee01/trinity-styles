@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthContext } from "@/lib/auth";
 import { isServiceRoleConfigured } from "@/lib/env";
-import { updateAdminOrder } from "@/lib/orders";
+import { updateAdminOrder, deleteAdminOrder } from "@/lib/orders";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { OrderStatus } from "@/lib/types";
 
@@ -46,5 +46,27 @@ export async function PATCH(
       { error: error instanceof Error ? error.message : "Could not update order" },
       { status: 400 },
     );
+  }
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  if (!isServiceRoleConfigured()) {
+    return NextResponse.json({ error: "Connect Supabase to update orders." }, { status: 503 });
+  }
+  const { role } = await getAuthContext();
+  if (role !== "admin") {
+    return NextResponse.json({ error: "Admin only" }, { status: 403 });
+  }
+
+  const { id } = await params;
+  try {
+    await deleteAdminOrder(id);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not delete order";
+    return NextResponse.json({ error: message }, { status: message === "Order not found." ? 404 : 400 });
   }
 }

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { OfferPrice } from "@/components/product/offer-price";
+import { DeleteProductButton } from "@/components/admin/delete-product-button";
 import { categoryOptions, colors as defaultColors, mergeCategoryNames, sizes as defaultSizes } from "@/lib/demo-catalog";
 import { isSupabaseConfigured } from "@/lib/env";
 import { slugify } from "@/lib/format";
@@ -633,9 +634,19 @@ export function ProductForm({
         ))}
       </section>
 
-      <button type="submit" disabled={pending} className="press h-12 w-full rounded-full bg-primary text-sm text-primary-foreground disabled:opacity-50 sm:w-auto sm:px-6">
-        {pending ? "Saving…" : product ? "Save changes" : "Add product"}
-      </button>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <button type="submit" disabled={pending} className="press h-12 w-full rounded-full bg-primary text-sm text-primary-foreground disabled:opacity-50 sm:w-auto sm:px-6">
+          {pending ? "Saving…" : product ? "Save changes" : "Add product"}
+        </button>
+        {product ? (
+          <DeleteProductButton
+            id={product.id}
+            name={product.name}
+            redirectTo="/admin/products"
+            className="press h-12 w-full rounded-full border border-destructive px-6 text-sm text-destructive sm:w-auto"
+          />
+        ) : null}
+      </div>
     </form>
   );
 }

@@ -72,6 +72,10 @@ On payment failure (`txstatus` 2): cancel pending order if still pending.
 
 Auth: admin. Body: `{ "status"?, "trackingNumber"? }`. Moving to `cancelled` from `paid|processing|shipped` restores stock once. Refund MoMo manually in the Moolre dashboard.
 
+## DELETE /api/admin/orders/[id]
+
+Auth: admin. Removes the order and its lines. If the order had taken stock and that stock was not already put back, the sizes go back on the shelf first. The Mobile Money payment is not refunded.
+
 ## GET /api/moolre/verify?reference=
 
 Auth: required (order owner). Confirms payment via Moolre status if webhook lagged.
@@ -98,11 +102,11 @@ Request: `{ "path": "/products" }`
 
 ## POST /api/try-on
 
-Auth: optional (guests allowed).
+Auth: signed-in customer. Guests receive 401.
 
 Request: `{ "productId": "uuid", "personImagePath": "user-id/file.jpg", "garmentImageUrl": "string" }` or multipart with `personImage`.
 
-`personImagePath` is optional and only for a signed-in customer. It must be an object path in the private `user-photos` bucket under that customer's own folder. Guests send the photo in the multipart body. The server signs the path; it does not fetch an arbitrary URL.
+`personImagePath` is optional. It must be an object path in the private `user-photos` bucket under that customer's own folder. The server signs the path; it does not fetch an arbitrary URL.
 
 `garmentImageUrl` is optional. When it is sent, it must be one of that product's photos. Otherwise the try-on uses the first photo.
 
@@ -118,13 +122,17 @@ Auth: admin. Returns masked RunPod key, worker mode, URLs, timeouts, stub toggle
 
 Auth: admin. Updates singleton `try_on_settings`. Optional `applyPreset`: `qwen_image_edit` | `seedream_v4_edit`. `clearApiKey: true` removes the stored RunPod key. A new `runpodApiKey` replaces it. `runpodBalanceUsd` stores the typed credit balance. The full key is never returned.
 
+## DELETE /api/admin/products/[id]
+
+Auth: admin. Deletes the product, its sizes, wishlist rows, and try-on sessions for that piece. Refuses when an order line still points at one of its sizes, so paid history stays intact.
+
 ## POST /api/admin/try-on-settings/test
 
 Auth: admin. Server-side RunPod submit probe for the selected worker shape.
 
 ## GET /api/try-on/[id]
 
-Auth: owner or guest with session id.
+Auth: the signed-in customer who started the try-on, or an admin.
 
 Response:
 

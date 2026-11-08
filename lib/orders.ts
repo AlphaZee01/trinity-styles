@@ -74,3 +74,23 @@ export async function updateAdminOrder(
     if (error) throw error;
   }
 }
+
+export async function deleteAdminOrder(orderId: string) {
+  const admin = createAdminClient();
+  const { data: order, error: readError } = await admin
+    .from("orders")
+    .select("id, status, stock_restored_at")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (readError) throw new Error(readError.message);
+  if (!order) throw new Error("Order not found.");
+
+  const status = order.status as OrderStatus;
+  if (PAID_PATH.includes(status) && !order.stock_restored_at) {
+    const { error: restoreError } = await admin.rpc("restore_stock_for_order", { p_order_id: orderId });
+    if (restoreError) throw new Error(restoreError.message);
+  }
+
+  const { error } = await admin.from("orders").delete().eq("id", orderId);
+  if (error) throw new Error(error.message);
+}

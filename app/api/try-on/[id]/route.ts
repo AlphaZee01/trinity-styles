@@ -12,8 +12,15 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const { userId, role } = await getAuthContext().catch(() => ({ userId: null, role: null }));
   const memory = getMemorySession(id);
   if (memory) {
+    if (!userId) {
+      return NextResponse.json({ error: "Sign in to try this on." }, { status: 401 });
+    }
+    if (memory.userId !== userId && role !== "admin") {
+      return NextResponse.json({ error: "Session not found" }, { status: 404 });
+    }
     return NextResponse.json({
       id: memory.id,
       status: memory.status,
@@ -31,8 +38,10 @@ export async function GET(
     return NextResponse.json({ error: "Session not found" }, { status: 404 });
   }
 
-  const { userId, role } = await getAuthContext().catch(() => ({ userId: null, role: null }));
-  if (session.user_id && session.user_id !== userId && role !== "admin") {
+  if (!userId) {
+    return NextResponse.json({ error: "Sign in to try this on." }, { status: 401 });
+  }
+  if (session.user_id !== userId && role !== "admin") {
     return NextResponse.json({ error: "Session not found" }, { status: 404 });
   }
 

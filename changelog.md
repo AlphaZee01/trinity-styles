@@ -2,6 +2,9 @@
 
 ## 2026-11-08
 
+- Admin products can be deleted from the catalog and from the product form, after a confirmation. A piece that is already on an order stays.
+- Admin orders can be deleted after a confirmation. Stock the order had taken goes back on the shelf. The Mobile Money payment is not refunded.
+- Virtual try-on requires a signed-in account. Guests who tap Try it on go to sign in and return to that product. The try-on API rejects a request with no account.
 - Stock adjustment functions can be called only with the service role. Anonymous and signed-in shoppers can no longer run them through the database API.
 - Shop responses send frame, content-type, referrer, permissions, content-security, and HTTPS headers. The Moolre webhook secret is compared in constant time.
 - Checkout, address lookup, and page-view recording are rate limited. Product and try-on uploads are capped at 8 MB. Try-on photos must be an upload or the signed-in customer's own storage path.

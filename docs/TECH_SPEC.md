@@ -54,7 +54,7 @@ Zustand with `persist` (localStorage). Snapshot: variantId, productId, name, slu
 
 ## Try-on
 
-1. Client uploads person image via `POST /api/try-on` (multipart) into private `user-photos`.
+1. A signed-in customer uploads a person image via `POST /api/try-on` (multipart) into private `user-photos`. Guests are sent to sign in and the API rejects them.
 2. Server loads singleton `try_on_settings` (or env fallback), inserts `try_on_sessions`, and submits RunPod **Qwen Image Edit** or **Seedream 4.0 Edit** payloads (never the legacy `person_image`/`garment_image` shape). The prompt names the product category: Tops is a top, Bottoms is trousers, and any later category uses its own name. If the product photo shows the piece on a person, the prompt tells the model to take only that piece and leave accessories and other clothes behind.
 3. Client polls `GET /api/try-on/[id]` using `pollIntervalMs` / `maxPollAttempts` from the POST response.
 4. On complete, server copies the result into private `try-on-results` and stores a signed URL on the session.

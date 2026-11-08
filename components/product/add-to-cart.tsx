@@ -54,12 +54,14 @@ export function AddToCart({
   shippingFeeGhs,
   sizeGuideNote,
   tryOnEnabled = true,
+  signedIn = false,
 }: {
   product: ProductWithVariants;
   isNew: boolean;
   shippingFeeGhs: number;
   sizeGuideNote: string;
   tryOnEnabled?: boolean;
+  signedIn?: boolean;
 }) {
   const variants = product.product_variants;
   const sizes = [...new Set(variants.map((item) => item.size))];
@@ -173,14 +175,24 @@ export function AddToCart({
       </div>
 
       {tryOnEnabled ? (
-        <button
-          type="button"
-          onClick={() => setTryOnOpen(true)}
-          className="press cta-premium flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground"
-        >
-          <HangerIcon />
-          Try it on
-        </button>
+        signedIn ? (
+          <button
+            type="button"
+            onClick={() => setTryOnOpen(true)}
+            className="press cta-premium flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground"
+          >
+            <HangerIcon />
+            Try it on
+          </button>
+        ) : (
+          <Link
+            href={`/login?next=${encodeURIComponent(`/product/${product.slug}`)}`}
+            className="press cta-premium flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground"
+          >
+            <HangerIcon />
+            Try it on
+          </Link>
+        )
       ) : (
         <p className="text-center text-sm text-muted-foreground">Virtual try-on is not available right now.</p>
       )}
@@ -225,7 +237,9 @@ export function AddToCart({
         ))}
       </ul>
 
-      <TryOnPanel product={product} open={tryOnOpen} onOpenChange={setTryOnOpen} onAddToBag={addToBag} />
+      {signedIn ? (
+        <TryOnPanel product={product} open={tryOnOpen} onOpenChange={setTryOnOpen} onAddToBag={addToBag} />
+      ) : null}
     </div>
   );
 }

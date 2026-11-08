@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { AddToCart } from "@/components/product/add-to-cart";
 import { ProductGallery } from "@/components/product/product-gallery";
+import { getAuthContext } from "@/lib/auth";
 import { getProductBySlug, listProducts } from "@/lib/products";
 import { getShopSettings } from "@/lib/shop-settings";
 import { getResolvedTryOnSettings, isTryOnAiConfigured } from "@/lib/try-on-settings";
@@ -13,11 +14,12 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
-  const [newest, shop, tryOnSettings, tryOnReady] = await Promise.all([
+  const [newest, shop, tryOnSettings, tryOnReady, auth] = await Promise.all([
     listProducts({ audience: "new" }),
     getShopSettings(),
     getResolvedTryOnSettings(),
     isTryOnAiConfigured(),
+    getAuthContext(),
   ]);
   const tryOnEnabled = tryOnReady || (process.env.NODE_ENV !== "production" && tryOnSettings.useStubWhenUnconfigured);
 
@@ -31,6 +33,7 @@ export default async function ProductPage({
           shippingFeeGhs={shop.shippingFeeGhs}
           sizeGuideNote={shop.sizeGuideNote}
           tryOnEnabled={tryOnEnabled}
+          signedIn={Boolean(auth.userId)}
         />
       </div>
     </div>

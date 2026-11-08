@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DeleteOrderButton } from "@/components/admin/delete-order-button";
 import { OrderStatusForm } from "@/components/admin/order-status-form";
 import { OrderStatusPill } from "@/components/admin/order-status-pill";
 import { EmptyState } from "@/components/states";
@@ -173,6 +174,7 @@ function OrderCard({ order }: { order: AdminOrder }) {
         status={order.status}
         trackingNumber={typeof order.tracking_number === "string" ? order.tracking_number : null}
       />
+      <DeleteOrderButton id={order.id} reference={order.paystack_reference} />
     </article>
   );
 }

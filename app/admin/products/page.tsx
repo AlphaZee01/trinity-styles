@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { DeleteProductButton } from "@/components/admin/delete-product-button";
 import { EmptyState } from "@/components/states";
 import { formatGhs } from "@/lib/format";
 import { listAllProducts } from "@/lib/products";
@@ -25,8 +26,8 @@ export default async function AdminProductsPage() {
           {products.map((product) => {
             const stock = product.product_variants.reduce((sum, variant) => sum + variant.stock, 0);
             return (
-              <li key={product.id}>
-                <Link href={`/admin/products/${product.id}`} className="press glass flex items-center gap-3 rounded-2xl p-3">
+              <li key={product.id} className="glass flex items-center gap-3 rounded-2xl p-3">
+                <Link href={`/admin/products/${product.id}`} className="press flex min-w-0 flex-1 items-center gap-3">
                   <span className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-muted">
                     {product.images[0] ? (
                       <Image src={product.images[0]} alt="" fill className="object-cover" sizes="64px" />
@@ -40,6 +41,7 @@ export default async function AdminProductsPage() {
                   </span>
                   <span className="shrink-0 text-sm">{formatGhs(Number(product.base_price))}</span>
                 </Link>
+                <DeleteProductButton id={product.id} name={product.name} />
               </li>
             );
           })}
