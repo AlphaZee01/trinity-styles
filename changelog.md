@@ -2,6 +2,8 @@
 
 ## 2026-11-08
 
+- Git author for this repo is AlphaZee01 with godwintudzi5@gmail.com so Vercel can match commits to the GitHub account.
+
 - Status toasts at the top center: pill banners with slide and bounce in, success, warning, error, and info colors in the spirit of [JDStatusBarNotification](https://calimarkus.github.io/JDStatusBarNotification/documentation/jdstatusbarnotification/). `lib/notify.ts` wraps Sonner with the same defaults.
 - Buttons and shop CTAs use inset highlight, soft shadow, and a tighter press scale so they feel as tactile as the status toasts.
 - Premium shop polish: soft ambient background, gentle page enter on route change, glass auth panels and checkout summary, refined inputs, bottom-nav active pill, richer bag and wishlist toasts, welcome toasts on sign-in, and image hover depth on product cards.
