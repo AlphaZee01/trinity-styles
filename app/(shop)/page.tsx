@@ -63,7 +63,7 @@ export default async function HomePage({
           </p>
           <Link
             href="/products"
-            className="press mt-4 inline-flex h-11 items-center rounded-full bg-primary px-4 text-sm text-primary-foreground"
+            className="press cta-premium mt-4 inline-flex h-12 items-center rounded-full bg-primary px-5 text-sm text-primary-foreground"
           >
             Shop the collection
           </Link>

@@ -8,9 +8,11 @@ import { createClient } from "@/lib/supabase/client";
 
 export function WishlistButton({
   productId,
+  productName,
   appearance = "row",
 }: {
   productId: string;
+  productName?: string;
   appearance?: "row" | "float";
 }) {
   const [pending, setPending] = useState(false);
@@ -61,7 +63,9 @@ export function WishlistButton({
       if (error) throw error;
       setSaved(true);
       setPop((count) => count + 1);
-      toast.success("Saved to wishlist");
+      toast.success("Saved to wishlist", {
+        description: productName ?? "View it anytime from your wishlist.",
+      });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not save");
     } finally {

@@ -2,6 +2,10 @@
 
 ## 2026-11-08
 
+- Status toasts at the top center: pill banners with slide and bounce in, success, warning, error, and info colors in the spirit of [JDStatusBarNotification](https://calimarkus.github.io/JDStatusBarNotification/documentation/jdstatusbarnotification/). `lib/notify.ts` wraps Sonner with the same defaults.
+- Buttons and shop CTAs use inset highlight, soft shadow, and a tighter press scale so they feel as tactile as the status toasts.
+- Premium shop polish: soft ambient background, gentle page enter on route change, glass auth panels and checkout summary, refined inputs, bottom-nav active pill, richer bag and wishlist toasts, welcome toasts on sign-in, and image hover depth on product cards.
+
 - Shop settings in admin: delivery fee in cedis, contact phone, WhatsApp, email, delivery note, returns policy, and size guide text.
 - Checkout shows items, delivery, and total. Orders store shipping fee. MoMo wallet can differ from contact phone.
 - Paying reduces stock only when every line is available. Cancelling a paid order puts stock back. Admin can save a tracking reference; customers see it when shipped.

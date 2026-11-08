@@ -39,12 +39,16 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next?: st
         });
         if (error) throw error;
         if (!data.session) {
-          setNotice("Account created. Open the confirmation email. That link signs you in.");
+          const message = "Open the confirmation email. That link signs you in.";
+          setNotice(`Account created. ${message}`);
+          toast.info("Confirm your email", { description: message });
           return;
         }
+        toast.success("Welcome to Trinity Styles", { description: "Your account is ready." });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        toast.success("Welcome back", { description: "Taking you to your account." });
       }
       window.location.assign(safeNext(next));
     } catch (error) {
@@ -71,7 +75,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next?: st
         <Input id="password" name="password" type="password" required minLength={6} className="h-11 text-base" />
       </div>
       {notice ? <p className="text-sm text-muted-foreground">{notice}</p> : null}
-      <Button type="submit" className="h-11 w-full" disabled={pending}>
+      <Button type="submit" className="cta-premium h-12 w-full rounded-full" disabled={pending}>
         {pending ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
       </Button>
     </form>

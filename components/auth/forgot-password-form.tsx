@@ -41,7 +41,7 @@ export function ForgotPasswordForm() {
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required className="h-11 text-base" />
           </div>
-          <Button type="submit" className="h-11 w-full" disabled={pending}>
+          <Button type="submit" className="cta-premium h-12 w-full rounded-full" disabled={pending}>
             {pending ? "Sending…" : "Send reset link"}
           </Button>
         </>

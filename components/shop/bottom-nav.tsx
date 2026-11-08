@@ -30,11 +30,17 @@ export function BottomNav() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`press flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] tracking-[0.14em] uppercase ${
-                  active ? "text-olive" : "text-muted-foreground"
+                className={`press relative flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] tracking-[0.14em] uppercase ${
+                  active ? "font-medium text-olive" : "text-muted-foreground"
                 }`}
               >
-                <Icon className="size-5" strokeWidth={1.75} />
+                {active ? (
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-2.5 top-2 bottom-2 -z-10 rounded-2xl bg-primary/12 dark:bg-primary/18"
+                  />
+                ) : null}
+                <Icon className="size-5" strokeWidth={active ? 2 : 1.75} />
                 {item.label}
               </Link>
             </li>

@@ -98,7 +98,9 @@ export function AddToCart({
       compareAt,
     });
     setPop((count) => count + 1);
-    toast.success("Added to bag");
+    toast.success("Added to bag", {
+      description: `${product.name} · ${variant.size}, ${variant.color}`,
+    });
   }
 
   return (
@@ -172,7 +174,7 @@ export function AddToCart({
         <button
           type="button"
           onClick={() => setTryOnOpen(true)}
-          className="press flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground"
+          className="press cta-premium flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground"
         >
           <HangerIcon />
           Try it on
@@ -187,7 +189,7 @@ export function AddToCart({
         aria-pressed={added}
         aria-live="polite"
         onClick={addToBag}
-        className={`press flex h-12 w-full items-center justify-center gap-2 rounded-full border border-foreground bg-foreground text-background ${added ? "" : "disabled:opacity-40"}`}
+        className={`press cta-premium flex h-12 w-full items-center justify-center gap-2 rounded-full border border-foreground bg-foreground text-background ${added ? "" : "disabled:opacity-40"}`}
       >
         <ShoppingBag
           key={pop}
@@ -199,7 +201,7 @@ export function AddToCart({
       </button>
 
       <div className="grid grid-cols-2 gap-2">
-        <WishlistButton productId={product.id} />
+        <WishlistButton productId={product.id} productName={product.name} />
         <Link
           href="/shipping-returns"
           className="glass press flex h-12 items-center justify-center gap-2 rounded-xl px-2 text-center text-sm"

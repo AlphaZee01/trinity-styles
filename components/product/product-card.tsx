@@ -32,6 +32,10 @@ export function ProductCard({
           ) : (
             <div className="grid h-full place-items-center text-sm text-muted-foreground">No image</div>
           )}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/18 to-transparent opacity-0 transition-opacity duration-200 ease-[var(--ease-out)] [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+          />
           {showNew ? (
             <span className="absolute top-3 left-3 rounded-full bg-background/90 px-2 py-1 text-[10px] tracking-[0.14em] uppercase">
               New

@@ -118,7 +118,11 @@ export function CartView() {
       <aside className="glass h-fit rounded-2xl p-5">
         <p className="text-sm text-muted-foreground">Subtotal</p>
         <p className="mt-1 font-heading text-3xl tracking-tight">{formatGhs(total)}</p>
-        <Button className="mt-5 h-11 w-full" nativeButton={false} render={<Link href="/checkout" />}>
+        <Button
+          className="cta-premium mt-5 h-12 w-full rounded-full"
+          nativeButton={false}
+          render={<Link href="/checkout" />}
+        >
           Checkout
         </Button>
       </aside>

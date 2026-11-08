@@ -24,7 +24,7 @@ export function ResetPasswordForm() {
           const supabase = createClient();
           const { error } = await supabase.auth.updateUser({ password });
           if (error) throw error;
-          toast.success("Password updated.");
+          toast.success("Password updated", { description: "You can sign in with your new password." });
           router.push("/account");
           router.refresh();
         } catch (error) {
@@ -38,7 +38,7 @@ export function ResetPasswordForm() {
         <Label htmlFor="password">New password</Label>
         <Input id="password" name="password" type="password" required minLength={6} className="h-11 text-base" />
       </div>
-      <Button type="submit" className="h-11 w-full" disabled={pending}>
+      <Button type="submit" className="cta-premium h-12 w-full rounded-full" disabled={pending}>
         {pending ? "Saving…" : "Save password"}
       </Button>
     </form>

@@ -52,7 +52,7 @@ export function ProductGallery({
             </div>
           ))}
         </div>
-        <WishlistButton productId={productId} appearance="float" />
+        <WishlistButton productId={productId} productName={name} appearance="float" />
       </div>
       {images.length > 1 ? (
         <div className="mt-3 flex gap-2">

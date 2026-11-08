@@ -244,7 +244,7 @@ export function CheckoutForm({
           </div>
         </div>
       </div>
-      <aside className="h-fit space-y-4 rounded-xl border border-border p-5">
+      <aside className="glass h-fit space-y-4 rounded-2xl p-6">
         <p className="text-sm text-muted-foreground">Pay with Moolre Mobile Money · GHS</p>
         <dl className="space-y-2 text-sm">
           <div className="flex justify-between gap-4">
@@ -261,7 +261,11 @@ export function CheckoutForm({
           </div>
         </dl>
         <p className="text-xs text-muted-foreground">You will approve the charge on the MoMo number above.</p>
-        <Button type="submit" className="h-11 w-full" disabled={pending || !hydrated || items.length === 0}>
+        <Button
+          type="submit"
+          className="cta-premium h-12 w-full rounded-full"
+          disabled={pending || !hydrated || items.length === 0}
+        >
           {pending ? "Starting…" : "Pay now"}
         </Button>
       </aside>
