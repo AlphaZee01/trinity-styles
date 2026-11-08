@@ -262,19 +262,33 @@
 
 /* JDStatusBarNotification-style status pills (Sonner) */
 .ts-status-toaster {
-  --width: auto;
   --gap: 10px;
+  top: max(16px, env(safe-area-inset-top)) !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
 }
 
 .ts-status-toast {
-  position: relative;
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  translate: none !important;
+  pointer-events: auto;
+  transform: none !important;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.625rem;
   min-height: 44px;
-  width: max-content;
+  width: max-content !important;
   max-width: min(420px, calc(100vw - 2rem));
-  padding: 0.5rem 1rem 0.5rem 1.125rem;
+  padding: 0.5rem 2.25rem 0.5rem 1.125rem;
   border-radius: 9999px;
   border: 1px solid transparent;
   box-shadow:
@@ -291,22 +305,7 @@
 }
 
 .ts-status-toast[data-mounted="true"] {
-  animation: ts-status-enter 420ms var(--ease-drawer);
-}
-
-@keyframes ts-status-enter {
-  0% {
-    opacity: 0;
-    transform: translateY(calc(-100% - 12px));
-  }
-  72% {
-    opacity: 1;
-    transform: translateY(4px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  opacity: 1;
 }
 
 .ts-status-toast[data-type="default"],
@@ -349,7 +348,7 @@
 
 .ts-status-content {
   display: flex;
-  flex: 1;
+  flex: 0 1 auto;
   flex-direction: column;
   gap: 0.125rem;
   min-width: 0;
@@ -614,7 +613,14 @@
 }
 
 .link-secondary {
-  @apply press glass flex h-12 w-full items-center justify-center rounded-full text-sm font-medium;
+  display: flex;
+  height: 3rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 @media (hover: hover) and (pointer: fine) {

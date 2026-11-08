@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/states";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -106,7 +107,12 @@ export function CartView() {
                 <button
                   type="button"
                   className="text-sm text-muted-foreground"
-                  onClick={() => removeItem(item.variantId)}
+                  onClick={() => {
+                    removeItem(item.variantId);
+                    toast.error("Removed from bag", {
+                      description: `${item.name} · ${item.size}, ${item.color}`,
+                    });
+                  }}
                 >
                   Remove
                 </button>

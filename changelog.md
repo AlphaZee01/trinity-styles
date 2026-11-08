@@ -2,7 +2,12 @@
 
 ## 2026-11-08
 
+- Try-on AI is no longer a tab on the admin phone bar. It stays in the desktop admin menu.
+- Removing a piece from the bag shows a red toast with the piece name, size, and colour. Adding one stays green.
+- Sign out asks for confirmation first. Cancel keeps the session. Confirm ends it. The bag stays on the device.
 - Git author for this repo is AlphaZee01 with godwintudzi5@gmail.com so Vercel can match commits to the GitHub account.
+- Secondary auth links no longer use `@apply` on custom classes, which was breaking the local CSS build.
+- Status toasts sit in the horizontal center of the screen. The pill width no longer shifts them toward the right edge.
 
 - Status toasts at the top center: pill banners with slide and bounce in, success, warning, error, and info colors in the spirit of [JDStatusBarNotification](https://calimarkus.github.io/JDStatusBarNotification/documentation/jdstatusbarnotification/). `lib/notify.ts` wraps Sonner with the same defaults.
 - Buttons and shop CTAs use inset highlight, soft shadow, and a tighter press scale so they feel as tactile as the status toasts.

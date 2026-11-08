@@ -104,7 +104,7 @@ export function AdminShell({ children, name }: { children: React.ReactNode; name
       </div>
       <nav className="glass-chrome fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] md:hidden">
         <ul className="grid grid-cols-6">
-          {nav.map((item) => {
+          {nav.filter((item) => item.href !== "/admin/settings/try-on").map((item) => {
             const Icon = item.icon;
             const on = isActive(pathname, item.href);
             return (

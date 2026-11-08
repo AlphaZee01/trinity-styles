@@ -29,7 +29,7 @@ export default async function LoginPage({
       </Link>
       <div className="space-y-3 pt-2">
         <p className="text-center text-sm text-muted-foreground">New here?</p>
-        <Link href={registerHref} className="link-secondary">
+        <Link href={registerHref} className="press glass link-secondary">
           Create an account
         </Link>
       </div>

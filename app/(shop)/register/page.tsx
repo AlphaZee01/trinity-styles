@@ -20,7 +20,7 @@ export default async function RegisterPage({
       </AuthPanel>
       <div className="space-y-3 pt-2">
         <p className="text-center text-sm text-muted-foreground">Already shopping with us?</p>
-        <Link href={loginHref} className="link-secondary">
+        <Link href={loginHref} className="press glass link-secondary">
           Sign in
         </Link>
       </div>
