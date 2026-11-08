@@ -1,19 +1,36 @@
 # Trinity Styles — API Contract
 
-All secrets stay on the server. Amounts are GHS; Paystack amounts are pesewas.
+All secrets stay on the server. Amounts are GHS (decimal); Moolre collection uses cedis as a decimal string.
 
-## POST /api/paystack/initialize
+## GET /api/shop-settings
+
+Auth: none. Public shop copy and delivery fee for checkout and product pages.
+
+Response: `{ "shippingFeeGhs", "contactPhone", "contactWhatsapp", "contactEmail", "returnsPolicy", "deliveryNote", "sizeGuideNote" }`
+
+## GET /api/admin/shop-settings
+
+Auth: admin. Same fields plus `updatedAt`.
+
+## PATCH /api/admin/shop-settings
+
+Auth: admin. Updates singleton `shop_settings`. Amounts are GHS decimals.
+
+## POST /api/moolre/initialize
 
 Auth: required.
 
-Request:
+Request (new order):
 
 ```json
 {
   "items": [{ "variantId": "uuid", "quantity": 1 }],
+  "channel": "13",
+  "momoPhone": "string",
   "shippingAddress": {
     "full_name": "string",
     "phone": "string",
+    "momo_phone": "string",
     "city": "string",
     "region": "string",
     "address_line": "string",
@@ -22,19 +39,42 @@ Request:
 }
 ```
 
-Response: `{ "authorizationUrl": "string", "reference": "string", "orderId": "uuid" }`
+`momoPhone` or `shippingAddress.momo_phone` is the Mobile Money wallet charged. When omitted, `shippingAddress.phone` is used.
 
-Creates pending order, calls Paystack initialize with currency GHS.
+`channel`: `13` MTN, `6` Telecel, `7` AT.
 
-## POST /api/paystack/webhook
+Request (OTP continuation):
 
-Auth: Paystack signature (`x-paystack-signature`).
+```json
+{
+  "reference": "string",
+  "channel": "13",
+  "otp": "string"
+}
+```
 
-On `charge.success`: mark order paid if still pending, decrement variant stock, idempotent by reference.
+Response:
 
-## GET /api/paystack/verify?reference=
+- `{ "status": "otp_required", "reference", "orderId", "message" }`
+- `{ "status": "payment_requested", "reference", "orderId", "message" }`
 
-Auth: required (order owner). Confirms transaction with Paystack if webhook lagged.
+Creates pending order (first call), calls Moolre collection. Customer approves on phone.
+
+## POST /api/moolre/webhook
+
+Auth: Moolre callback `data.secret` must match `MOOLRE_WEBHOOK_SECRET`.
+
+On success (`status` 1, `code` P01, `data.txstatus` 1): mark order paid if still pending, call `decrement_stock_for_order`, idempotent by `externalref`.
+
+On payment failure (`txstatus` 2): cancel pending order if still pending.
+
+## PATCH /api/admin/orders/[id]
+
+Auth: admin. Body: `{ "status"?, "trackingNumber"? }`. Moving to `cancelled` from `paid|processing|shipped` restores stock once. Refund MoMo manually in the Moolre dashboard.
+
+## GET /api/moolre/verify?reference=
+
+Auth: required (order owner). Confirms payment via Moolre status if webhook lagged.
 
 Response: `{ "status": "paid" | "pending" | "failed", "orderId": "uuid" }`
 

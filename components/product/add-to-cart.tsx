@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CircleHelp, Leaf, ShoppingBag, Truck, Wind } from "lucide-react";
+import { formatGhs } from "@/lib/format";
 import { toast } from "sonner";
 import { TryOnPanel } from "@/components/try-on/try-on-panel";
 import { WishlistButton } from "@/components/product/wishlist-button";
@@ -49,9 +51,15 @@ function FeatureIcon({ name }: { name: "leaf" | "wind" | "fit" }) {
 export function AddToCart({
   product,
   isNew,
+  shippingFeeGhs,
+  sizeGuideNote,
+  tryOnEnabled = true,
 }: {
   product: ProductWithVariants;
   isNew: boolean;
+  shippingFeeGhs: number;
+  sizeGuideNote: string;
+  tryOnEnabled?: boolean;
 }) {
   const variants = product.product_variants;
   const sizes = [...new Set(variants.map((item) => item.size))];
@@ -116,7 +124,8 @@ export function AddToCart({
         </div>
         {guideOpen ? (
           <p className="mt-2 rounded-xl bg-muted px-3 py-2 text-sm text-muted-foreground">
-            Sizes run true. {variant ? `${variant.color} is the cloth for ${variant.size}.` : "Choose a size to see stock."}{" "}
+            {sizeGuideNote}{" "}
+            {variant ? `${variant.color} is the cloth for ${variant.size}.` : "Choose a size to see stock."}{" "}
             {inStock ? `${variant?.stock} in stock.` : "This size is out of stock."}
           </p>
         ) : null}
@@ -159,14 +168,18 @@ export function AddToCart({
         ) : null}
       </div>
 
-      <button
-        type="button"
-        onClick={() => setTryOnOpen(true)}
-        className="press flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground"
-      >
-        <HangerIcon />
-        Try it on
-      </button>
+      {tryOnEnabled ? (
+        <button
+          type="button"
+          onClick={() => setTryOnOpen(true)}
+          className="press flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground"
+        >
+          <HangerIcon />
+          Try it on
+        </button>
+      ) : (
+        <p className="text-center text-sm text-muted-foreground">Virtual try-on is not available right now.</p>
+      )}
 
       <button
         type="button"
@@ -187,10 +200,13 @@ export function AddToCart({
 
       <div className="grid grid-cols-2 gap-2">
         <WishlistButton productId={product.id} />
-        <p className="glass flex h-12 items-center justify-center gap-2 rounded-xl px-2 text-center text-sm">
+        <Link
+          href="/shipping-returns"
+          className="glass press flex h-12 items-center justify-center gap-2 rounded-xl px-2 text-center text-sm"
+        >
           <Truck className="size-4 shrink-0" strokeWidth={1.75} />
-          Free shipping & returns
-        </p>
+          Delivery from {formatGhs(shippingFeeGhs)}
+        </Link>
       </div>
 
       <ul className="glass grid grid-cols-3 divide-x divide-border rounded-2xl py-3">

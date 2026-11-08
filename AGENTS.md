@@ -18,4 +18,4 @@ Always follow the documents in `/docs`. Do not invent requirements.
 - [docs/DATABASE.md](docs/DATABASE.md)
 - [docs/API.md](docs/API.md)
 
-Currency is GHS (Ghana). Never expose Paystack, RunPod, or Supabase service-role secrets to the client.
+Currency is GHS (Ghana). Never expose Moolre, RunPod, or Supabase service-role secrets to the client.

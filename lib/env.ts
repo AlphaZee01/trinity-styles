@@ -26,8 +26,20 @@ export function getAppUrl() {
   return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 }
 
-export function getPaystackSecret() {
-  return process.env.PAYSTACK_SECRET_KEY ?? "";
+export function getMoolreApiUser() {
+  return process.env.MOOLRE_API_USER ?? "";
+}
+
+export function getMoolreApiPubKey() {
+  return process.env.MOOLRE_API_PUBKEY ?? "";
+}
+
+export function getMoolreAccountNumber() {
+  return process.env.MOOLRE_ACCOUNT_NUMBER ?? "";
+}
+
+export function getMoolreWebhookSecret() {
+  return process.env.MOOLRE_WEBHOOK_SECRET ?? "";
 }
 
 export function getRunpodConfig() {

@@ -58,9 +58,12 @@ Use Supabase CLI (`supabase migration new`) for new migrations. Do not invent ex
 - id uuid PK
 - user_id uuid FK profiles
 - status text: pending | paid | processing | shipped | delivered | cancelled
-- total_amount numeric(12,2)
-- paystack_reference text unique
-- shipping_address jsonb
+- total_amount numeric(12,2) — items + shipping_fee
+- shipping_fee numeric(12,2) — flat delivery charge from shop_settings at checkout
+- paystack_reference text unique (payment provider external reference, Moolre `externalref`)
+- shipping_address jsonb — `full_name`, `phone`, `city`, `region`, `address_line`, `notes`, optional `momo_phone` for the MoMo wallet charged
+- tracking_number text nullable — set by admin when shipped
+- stock_restored_at timestamptz nullable — set when cancelled and stock was put back
 - created_at timestamptz
 
 ### order_items
@@ -84,6 +87,15 @@ Use Supabase CLI (`supabase migration new`) for new migrations. Do not invent ex
 - runpod_endpoint_mode text nullable — `qwen_image_edit` | `seedream_v4_edit` for the worker that ran the job
 - created_at timestamptz
 
+### shop_settings
+
+Singleton row (`id` fixed). Delivery fee, customer contact, and policy copy. **No RLS policies** — only service-role admin APIs read or write.
+
+- shipping_fee_ghs numeric(12,2)
+- contact_phone, contact_whatsapp, contact_email text nullable
+- returns_policy, delivery_note, size_guide_note text
+- updated_at timestamptz
+
 ### try_on_settings
 
 Singleton row (`id` fixed). RunPod Qwen Image Edit / Seedream 4.0 configuration. **No RLS policies** — only service-role admin APIs read or write.
@@ -104,6 +116,13 @@ Singleton row (`id` fixed). RunPod Qwen Image Edit / Seedream 4.0 configuration.
 - try_on_session_id uuid FK try_on_sessions
 - product_id uuid FK products
 - created_at timestamptz
+
+### try_on_rate_events
+
+- id uuid PK
+- bucket_key text — rate-limit bucket (`user:{id}` or `ip:{address}`)
+- created_at timestamptz
+- Written only by the server. No client access.
 
 ### page_views
 
@@ -135,6 +154,8 @@ products.slug unique, products.category, product_variants.product_id, orders.use
 - orders / order_items: select own; writes via service role
 - try_on_sessions: owner select; guest rows only via service role APIs
 - try_on_settings: no client access; service role only
+- shop_settings: no client access; service role only
+- try_on_rate_events: no client access; service role only
 - page_views: no client access; service role only
 - saved_looks / wishlist_items: owner CRUD
 - Admin checks: `exists (select 1 from profiles where id = auth.uid() and role = 'admin')`
@@ -150,3 +171,8 @@ products.slug unique, products.category, product_variants.product_id, orders.use
 - on auth.users insert → profiles row
 - products.updated_at on update
 - profiles.role changes should also update auth.users raw_app_meta_data (security definer, private schema)
+
+## Stock RPCs (service role only)
+
+- `decrement_stock_for_order(order_id)` — subtracts line quantities when payment is fulfilled; returns false if any variant is short
+- `restore_stock_for_order(order_id)` — adds quantities back when a paid order is cancelled

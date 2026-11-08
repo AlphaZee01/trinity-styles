@@ -72,7 +72,7 @@ export default async function AdminOrdersPage({
     <div className="space-y-6">
       <div>
         <h1 className="font-heading text-4xl tracking-tight">Orders</h1>
-        <p className="mt-2 text-muted-foreground">Update fulfilment after Paystack marks an order paid.</p>
+        <p className="mt-2 text-muted-foreground">Update fulfilment after Moolre marks an order paid.</p>
       </div>
       {all.length === 0 ? (
         <EmptyState
@@ -168,7 +168,11 @@ function OrderCard({ order }: { order: AdminOrder }) {
       ) : null}
       <p className="text-sm break-all text-muted-foreground">{order.paystack_reference}</p>
       {destination ? <p className="text-sm break-words">{destination}</p> : null}
-      <OrderStatusForm orderId={order.id} status={order.status} />
+      <OrderStatusForm
+        orderId={order.id}
+        status={order.status}
+        trackingNumber={typeof order.tracking_number === "string" ? order.tracking_number : null}
+      />
     </article>
   );
 }

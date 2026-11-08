@@ -36,17 +36,17 @@ export function ProductGallery({
         <div
           ref={scroller}
           onScroll={onScroll}
-          className="glass flex h-[clamp(200px,40svh,340px)] snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-muted [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="glass flex aspect-[3/4] w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-muted [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {images.map((src, itemIndex) => (
-            <div key={src} className="relative min-w-full shrink-0 snap-center">
+            <div key={src} className="relative h-full min-w-full shrink-0 snap-center">
               <Image
                 src={src}
                 alt={`${name}, photo ${itemIndex + 1}`}
                 fill
                 priority={itemIndex === 0}
                 loading={itemIndex === 0 ? "eager" : "lazy"}
-                className="object-cover object-[center_18%]"
+                className="object-cover"
                 sizes="(max-width: 768px) 100vw, 448px"
               />
             </div>

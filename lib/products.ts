@@ -51,10 +51,10 @@ async function fetchCatalog(activeOnly: boolean) {
     let query = supabase.from("products").select("*, product_variants(*)").order("created_at", { ascending: false });
     if (activeOnly) query = query.eq("is_active", true);
     const { data, error } = await query;
-    if (error || !data) return demoCatalog;
+    if (error || !data) return [];
     return data as ProductWithVariants[];
   } catch {
-    return demoCatalog;
+    return [];
   }
 }
 

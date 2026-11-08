@@ -49,6 +49,13 @@ export default async function ProductsPage({
       <form className="grid gap-3 rounded-xl border border-border p-4 sm:grid-cols-4" method="get">
         {params.category ? <input type="hidden" name="category" value={params.category} /> : null}
         <input
+          name="q"
+          defaultValue={params.q ?? ""}
+          placeholder="Search pieces"
+          aria-label="Search pieces"
+          className="h-11 rounded-lg border border-input bg-background px-3 sm:col-span-4"
+        />
+        <input
           name="size"
           defaultValue={params.size ?? ""}
           placeholder="Size (S, M, L)"

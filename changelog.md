@@ -1,7 +1,18 @@
 # Changelog
 
+## 2026-11-08
+
+- Shop settings in admin: delivery fee in cedis, contact phone, WhatsApp, email, delivery note, returns policy, and size guide text.
+- Checkout shows items, delivery, and total. Orders store shipping fee. MoMo wallet can differ from contact phone.
+- Paying reduces stock only when every line is available. Cancelling a paid order puts stock back. Admin can save a tracking reference; customers see it when shipped.
+- Failed MoMo payments cancel pending orders. Success and failure screens mention shop contact when set.
+- Privacy, terms, and shipping-returns pages. Footer links and contact. Product page shows delivery from fee and honest size guide.
+- Forgot-password and reset-password flow. Try-on asks for privacy consent. Try-on rate limits persist in the database. Live catalog no longer falls back to demo pieces when Supabase errors. Shop search box on the products page.
+
 ## 2026-11-07
 
+- Checkout uses **Moolre** Mobile Money (MTN, Telecel, AT) instead of Paystack: `/api/moolre/initialize`, `webhook`, and `verify`; on-site MoMo network + OTP step; success page polls Moolre status. Paystack routes and `lib/paystack.ts` removed. Docs, env example, and AGENTS updated. `orders.paystack_reference` still stores the Moolre `externalref`.
+- The product page photo uses the same portrait frame as the shop cards.
 - Production is on Vercel at [https://trinity-styles.vercel.app](https://trinity-styles.vercel.app) (project **trinity-styles**). Supabase and rate-limit env vars are on the project; `NEXT_PUBLIC_APP_URL` points at the live URL. Vercel SSO deployment protection was turned off so the shop is public on the `.vercel.app` domain.
 - Vercel CLI is a dev dependency with `vercel:login`, `vercel:link`, `vercel:deploy`, and `vercel:prod` scripts. `scripts/push-env-to-vercel.mjs` syncs `.env.local` to Vercel. `.vercelignore` skips local-only folders (`pics`, `load`).
 

@@ -13,6 +13,7 @@ export type TryOnStatus = "pending" | "processing" | "completed" | "failed";
 export type ShippingAddress = {
   full_name: string;
   phone: string;
+  momo_phone?: string;
   city: string;
   region: string;
   address_line: string;

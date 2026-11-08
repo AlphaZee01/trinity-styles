@@ -33,7 +33,7 @@ export function CatalogSkeleton() {
 export function ProductSkeleton() {
   return (
     <div className="mx-auto max-w-md space-y-5">
-      <Skeleton className="h-[clamp(200px,40svh,340px)] rounded-3xl" />
+      <Skeleton className="aspect-[3/4] w-full rounded-3xl" />
       <Skeleton className="h-10 w-3/4" />
       <Skeleton className="h-6 w-24" />
       <div className="flex gap-2">{blocks(3, "h-11 w-14 rounded-full")}</div>

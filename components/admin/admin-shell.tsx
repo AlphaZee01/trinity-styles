@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { BarChart3, ChevronLeft, LayoutGrid, Shirt, ShoppingBag, Sparkles, Users } from "lucide-react";
+import { BarChart3, ChevronLeft, LayoutGrid, Settings, Shirt, ShoppingBag, Sparkles, Users } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useClientPathname } from "@/hooks/use-client-pathname";
 
@@ -12,6 +12,7 @@ const nav = [
   { href: "/admin/products", label: "Products", icon: Shirt },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/reports", label: "Reports", icon: BarChart3 },
+  { href: "/admin/settings/shop", label: "Shop", icon: Settings },
   { href: "/admin/settings/try-on", label: "Try-on AI", icon: Sparkles },
 ];
 

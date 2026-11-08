@@ -7,9 +7,9 @@ Do not invent architecture outside this spec.
 - Next.js App Router, TypeScript, Tailwind, shadcn/ui, Lucide, Zustand, Sonner
 - Route Handlers + Server Actions
 - Supabase Postgres, Auth, Storage (`@supabase/ssr`, `@supabase/supabase-js`)
-- Paystack (server secret key)
+- Moolre (API user, public key, account number, webhook secret — server only)
 - RunPod Serverless (server API key)
-- Render: `output: 'standalone'`
+- Vercel production deploy (`output: 'standalone'` for portable Node builds)
 
 ## Folder structure
 
@@ -17,9 +17,9 @@ Do not invent architecture outside this spec.
 app/(shop)/          storefront routes
 app/admin/           admin CRM
 app/api/try-on/      try-on POST + GET by id
-app/api/paystack/    initialize, webhook, verify
+app/api/moolre/      initialize, webhook, verify
 lib/supabase/        browser, server, middleware, admin clients
-lib/paystack.ts
+lib/moolre.ts
 lib/runpod.ts
 lib/try-on-settings.ts
 lib/types.ts
@@ -46,11 +46,11 @@ Zustand with `persist` (localStorage). Snapshot: variantId, productId, name, slu
 
 ## Payments (GHS)
 
-1. Server creates `orders` (`pending`) + `order_items` with unique `paystack_reference`
-2. Paystack Initialize with `currency: GHS`, amount in pesewas (cedis × 100)
-3. Redirect to Paystack
-4. Webhook verifies HMAC signature; on `charge.success` mark paid, decrement stock (idempotent)
-5. Success page calls verify as backup and clears cart
+1. Server creates `orders` (`pending`) + `order_items` with unique `paystack_reference` (stores Moolre `externalref`); `total_amount` includes `shop_settings.shipping_fee_ghs`
+2. Moolre Mobile Money collection with `currency: GHS`, amount as decimal cedis, channel (MTN / Telecel / AT); payer phone may differ from delivery contact via `momo_phone`
+3. Customer approves USSD prompt on phone; OTP step when Moolre requires it
+4. Webhook validates callback `secret`; on `P01` + `txstatus` 1 call `decrement_stock_for_order` then mark paid (idempotent); on `txstatus` 2 cancel pending order
+5. Success page polls `GET /api/moolre/verify` as backup and clears cart
 
 ## Try-on
 
@@ -75,5 +75,5 @@ Multi-garment try-on, Replicate/IDM-VTON, AI size recommendation, credits/vendor
 - Service role only in server code
 - No secret keys in `NEXT_PUBLIC_*`
 - RLS on all public tables
-- Paystack webhook signature verification
+- Moolre webhook callback secret verification
 - Try-on rate limiting by IP and user id

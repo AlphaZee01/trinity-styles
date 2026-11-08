@@ -58,6 +58,8 @@ export type AdminOrder = {
   user_id: string;
   status: OrderStatus;
   total_amount: number;
+  shipping_fee?: number;
+  tracking_number?: string | null;
   paystack_reference: string;
   shipping_address: Record<string, unknown>;
   created_at: string;

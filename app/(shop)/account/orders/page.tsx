@@ -54,7 +54,7 @@ export default async function OrdersPage() {
     return (
       <div className="space-y-6">
         <h1 className="font-heading text-4xl tracking-tight">Orders</h1>
-        <EmptyState title="No orders yet" description="When a Paystack payment lands, it will show here with status and total." />
+        <EmptyState title="No orders yet" description="When a Mobile Money payment lands, it will show here with status and total." />
       </div>
     );
   }
@@ -106,7 +106,19 @@ export default async function OrdersPage() {
                   })}
                 </ul>
               ) : null}
-              <p className="text-sm text-muted-foreground">{formatGhs(Number(order.total_amount))}</p>
+              <p className="text-sm text-muted-foreground">
+                {formatGhs(Number(order.total_amount))}
+                {Number(order.shipping_fee) > 0 ? (
+                  <span className="block text-xs">Includes delivery {formatGhs(Number(order.shipping_fee))}</span>
+                ) : null}
+              </p>
+              {typeof order.tracking_number === "string" &&
+              order.tracking_number &&
+              (order.status === "shipped" || order.status === "delivered") ? (
+                <p className="text-sm">
+                  Tracking: <span className="font-medium break-all">{order.tracking_number}</span>
+                </p>
+              ) : null}
             </li>
           );
         })}

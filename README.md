@@ -1,12 +1,12 @@
 # Trinity Styles
 
-Custom clothing storefront and CRM. Ghana market, GHS via Paystack, virtual try-on via RunPod, data on Supabase.
+Custom clothing storefront and CRM. Ghana market, GHS via Moolre Mobile Money, virtual try-on via RunPod, data on Supabase.
 
 Always follow `/docs`. Do not invent extra product features.
 
 ## Stack
 
-Next.js App Router, TypeScript, Tailwind, shadcn/ui, Zustand, Sonner, Supabase, Paystack, RunPod.
+Next.js App Router, TypeScript, Tailwind, shadcn/ui, Zustand, Sonner, Supabase, Moolre, RunPod.
 
 ## Setup
 
@@ -24,7 +24,7 @@ Open http://localhost:3000. Without env keys the shop uses a seeded demo catalog
 See `.env.example`:
 
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-- `PAYSTACK_SECRET_KEY`, `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY`
+- `MOOLRE_API_USER`, `MOOLRE_API_PUBKEY`, `MOOLRE_ACCOUNT_NUMBER`, `MOOLRE_WEBHOOK_SECRET`
 - `RUNPOD_API_KEY`, `RUNPOD_ENDPOINT_ID`
 - `NEXT_PUBLIC_APP_URL`
 - `TRY_ON_RATE_LIMIT_WINDOW_MS`, `TRY_ON_RATE_LIMIT_MAX`
@@ -56,9 +56,9 @@ update public.profiles set role = 'admin' where id = '<user-uuid>';
 
 The `sync_profile_role_to_app_metadata` trigger copies the role into `auth.users.raw_app_meta_data`.
 
-## Paystack (GHS)
+## Moolre (GHS)
 
-Point the webhook to `https://YOUR_DOMAIN/api/paystack/webhook`. Amounts are pesewas. Currency is `GHS`.
+Point the callback URL to `https://YOUR_DOMAIN/api/moolre/webhook`. Set `MOOLRE_WEBHOOK_SECRET` to the secret Moolre sends in `data.secret`. Amounts are decimal cedis. Channels: `13` MTN, `6` Telecel, `7` AT.
 
 ## RunPod
 

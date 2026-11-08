@@ -3,4 +3,4 @@ description: Follow Trinity Styles /docs; do not invent product requirements
 alwaysApply: true
 ---
 
-Always follow `/docs` (PRD, TECH_SPEC, DESIGN, DATABASE, API). Do not invent features. Currency is GHS. Secrets stay on the server. Apply Emil Kowalski design skills for UI and motion.
+Always follow `/docs` (PRD, TECH_SPEC, DESIGN, DATABASE, API). Do not invent features. Currency is GHS. Secrets stay on the server (Moolre, RunPod, Supabase service role). Apply Emil Kowalski design skills for UI and motion.

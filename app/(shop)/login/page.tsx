@@ -21,6 +21,9 @@ export default async function LoginPage({
         <p className="mt-2 text-sm text-muted-foreground">Use your email for orders, looks, and checkout.</p>
       </div>
       <AuthForm mode="login" next={next} />
+      <Link href="/forgot-password" className="press inline-flex h-11 items-center text-sm text-muted-foreground">
+        Forgot password
+      </Link>
       <div className="space-y-3 border-t border-border pt-6">
         <p className="text-sm text-muted-foreground">New here?</p>
         <Link

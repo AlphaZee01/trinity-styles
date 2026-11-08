@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getAuthContext } from "@/lib/auth";
 import { isServiceRoleConfigured } from "@/lib/env";
 import { getProductById } from "@/lib/products";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/rate-limit";
+import { enforceTryOnRateLimit } from "@/lib/try-on-rate-db";
 import { tryOnRateLimit } from "@/lib/env";
 import { buildTryOnProductContext } from "@/lib/try-on-product-context";
 import {
@@ -18,7 +19,8 @@ import { createMemorySession } from "@/lib/try-on-memory";
 export async function POST(request: Request) {
   const limits = tryOnRateLimit();
   const { userId } = await getAuthContext().catch(() => ({ userId: null }));
-  const limited = rateLimit(`try-on:${userId ?? clientIp(request)}`, limits.max, limits.windowMs);
+  const bucket = userId ? `user:${userId}` : `ip:${clientIp(request)}`;
+  const limited = await enforceTryOnRateLimit(bucket, limits.max, limits.windowMs);
   if (!limited.ok) {
     return NextResponse.json({ error: "Too many try-on requests. Wait a moment." }, { status: 429 });
   }

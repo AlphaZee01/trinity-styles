@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { AddToCart } from "@/components/product/add-to-cart";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { getProductBySlug, listProducts } from "@/lib/products";
+import { getShopSettings } from "@/lib/shop-settings";
+import { getResolvedTryOnSettings, isTryOnAiConfigured } from "@/lib/try-on-settings";
 
 export default async function ProductPage({
   params,
@@ -11,13 +13,25 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
-  const newest = (await listProducts({ audience: "new" })).some((item) => item.id === product.id);
+  const [newest, shop, tryOnSettings, tryOnReady] = await Promise.all([
+    listProducts({ audience: "new" }),
+    getShopSettings(),
+    getResolvedTryOnSettings(),
+    isTryOnAiConfigured(),
+  ]);
+  const tryOnEnabled = tryOnReady || (process.env.NODE_ENV !== "production" && tryOnSettings.useStubWhenUnconfigured);
 
   return (
     <div className="mx-auto max-w-md">
       <ProductGallery images={product.images} name={product.name} productId={product.id} />
       <div className="pt-5">
-        <AddToCart product={product} isNew={newest} />
+        <AddToCart
+          product={product}
+          isNew={newest.some((item) => item.id === product.id)}
+          shippingFeeGhs={shop.shippingFeeGhs}
+          sizeGuideNote={shop.sizeGuideNote}
+          tryOnEnabled={tryOnEnabled}
+        />
       </div>
     </div>
   );

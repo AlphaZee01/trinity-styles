@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
@@ -46,6 +47,7 @@ export function TryOnPanel({
   const streamRef = useRef<MediaStream | null>(null);
   const [cameraOn, setCameraOn] = useState(false);
   const [garmentIndex, setGarmentIndex] = useState(0);
+  const [consent, setConsent] = useState(false);
   const sheet = usePresence(open, 220);
   const garment = product.images[garmentIndex] ?? product.images[0];
 
@@ -145,10 +147,18 @@ export function TryOnPanel({
   }
 
   function choosePhoto() {
+    if (!consent) {
+      toast.error("Agree to the privacy notice before adding a photo.");
+      return;
+    }
     inputRef.current?.click();
   }
 
   async function startCamera() {
+    if (!consent) {
+      toast.error("Agree to the privacy notice before using the camera.");
+      return;
+    }
     if (!navigator.mediaDevices?.getUserMedia) {
       toast.error("This browser cannot open the camera.");
       return;
@@ -504,6 +514,23 @@ export function TryOnPanel({
         className="sr-only"
         onChange={(event) => onFile(event.target.files?.[0])}
       />
+
+      {!ready && !consent ? (
+        <label className="mt-4 flex items-start gap-3 rounded-xl border border-border p-3 text-sm">
+          <input
+            type="checkbox"
+            className="mt-1 size-4 shrink-0"
+            checked={consent}
+            onChange={(event) => setConsent(event.target.checked)}
+          />
+          <span>
+            I agree to use my photo only for this try-on.{" "}
+            <Link href="/privacy" className="underline underline-offset-4">
+              Privacy
+            </Link>
+          </span>
+        </label>
+      ) : null}
 
       {!ready ? (
         <div className="mt-4 grid grid-cols-2 gap-3">
