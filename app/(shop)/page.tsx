@@ -2,8 +2,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { Gem, Leaf, Truck } from "lucide-react";
 import { ProductFeed } from "@/components/product/product-feed";
+import { HomeHero } from "@/components/shop/home-hero";
 import { listCategoryNames } from "@/lib/categories";
 import { listProducts } from "@/lib/products";
+import type { ProductWithVariants } from "@/lib/types";
+
+function heroSlides(catalog: ProductWithVariants[]) {
+  const urls: string[] = [];
+  for (const product of catalog) {
+    const src = product.images[0];
+    if (!src || urls.includes(src)) continue;
+    urls.push(src);
+    if (urls.length >= 5) break;
+  }
+  return urls;
+}
 
 const trust = [
   { icon: Leaf, title: "Sustainable materials", detail: "Thoughtfully sourced" },
@@ -27,7 +40,7 @@ export default async function HomePage({
   const audience = tab === "women" || tab === "men" || tab === "new" ? tab : "all";
   const [catalog, newest] = await Promise.all([listProducts(), listProducts({ audience: "new" })]);
   const categories = await listCategoryNames(catalog.map((product) => product.category));
-  const hero = catalog[0];
+  const slides = heroSlides(catalog);
   const products =
     audience === "women"
       ? catalog.filter((product) => product.gender !== "men")
@@ -39,50 +52,7 @@ export default async function HomePage({
 
   return (
     <div className="space-y-10">
-      <section className="home-hero relative -mx-4 overflow-hidden sm:mx-0 sm:rounded-3xl">
-        <div className="relative flex h-[100svh] max-h-[52rem] min-h-[22rem] items-center justify-center bg-muted sm:h-[min(54svh,40rem)] sm:max-h-none sm:min-h-80">
-          {hero?.images[0] ? (
-            <div className="home-hero-media absolute inset-0" aria-hidden>
-              <Image
-                src={hero.images[0]}
-                alt=""
-                fill
-                priority
-                loading="eager"
-                className="object-cover object-center"
-                sizes="(max-width: 768px) 100vw, 1152px"
-              />
-            </div>
-          ) : null}
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/65 sm:from-black/25 sm:via-black/35 sm:to-black/55"
-            aria-hidden
-          />
-          <div className="relative z-10 mx-auto max-w-md px-6 text-center text-white sm:max-w-xl sm:px-8">
-            <p className="text-[10px] tracking-[0.2em] text-white/80 uppercase sm:text-[11px]">New collection</p>
-            <h1 className="mt-3 font-heading text-[1.875rem] leading-[1.2] tracking-tight text-pretty sm:mt-2 sm:text-5xl sm:leading-[0.95]">
-              Elevated essentials
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-pretty text-white/88 sm:mt-3 sm:text-sm sm:text-white/85">
-              Timeless pieces. Modern silhouettes. Made for the way you live.
-            </p>
-            <div className="mt-6 flex flex-col items-center gap-3 sm:mt-5 sm:flex-row sm:justify-center">
-              <Link
-                href="/products"
-                className="press inline-flex h-11 min-w-[10.5rem] items-center justify-center rounded-sm bg-white px-5 text-[17px] font-medium text-foreground sm:h-12 sm:rounded-full sm:text-sm"
-              >
-                Shop the collection
-              </Link>
-              <Link
-                href="/?tab=new"
-                className="press inline-flex h-11 min-w-[10.5rem] items-center justify-center rounded-sm border border-white/55 bg-white/10 px-5 text-[17px] font-medium text-white backdrop-blur-sm sm:h-12 sm:rounded-full sm:text-sm"
-              >
-                New arrivals
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomeHero slides={slides} />
 
       <section>
         <div className="mb-4 flex items-end justify-between gap-3">

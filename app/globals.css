@@ -700,7 +700,7 @@
 }
 
 @media (max-width: 767px) {
-  .home-hero-media img {
+  .home-hero-media--active img {
     transform: scale(1);
     animation: home-hero-ken-burns 18s ease-out infinite alternate;
     will-change: transform;
