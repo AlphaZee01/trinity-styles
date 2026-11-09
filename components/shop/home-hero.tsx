@@ -82,6 +82,7 @@ export function HomeHero({ slides }: { slides: string[] }) {
                   aria-hidden={!active}
                 >
                   <div
+                    key={active ? `zoom-${index}-${i}` : `idle-${i}`}
                     className={`home-hero-media absolute inset-0${active && !reducedMotion ? " home-hero-media--active" : ""}`}
                   >
                     <Image
@@ -128,7 +129,7 @@ export function HomeHero({ slides }: { slides: string[] }) {
         </div>
         {count > 1 ? (
           <div
-            className="absolute inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-10 flex justify-center gap-2"
+            className="absolute inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-10 flex justify-center gap-2 sm:bottom-[max(1.25rem,env(safe-area-inset-bottom))]"
             role="tablist"
             aria-label="Hero slides"
           >

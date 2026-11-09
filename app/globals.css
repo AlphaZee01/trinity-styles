@@ -694,24 +694,22 @@
   }
 }
 
-/* Homepage hero — mobile full-bleed cover + slow zoom (Boulevard-inspired treatment) */
+/* Homepage hero — zoom out each slide (1.15 → 1 over slide duration; Boulevard-scale) */
 .home-hero-media {
   overflow: hidden;
 }
 
-@media (max-width: 767px) {
-  .home-hero-media--active img {
-    transform: scale(1);
-    animation: home-hero-ken-burns 18s ease-out infinite alternate;
-    will-change: transform;
-  }
+.home-hero-media--active img {
+  transform: scale(1.15);
+  animation: home-hero-zoom-out 8s ease-out forwards;
+  will-change: transform;
 }
 
-@keyframes home-hero-ken-burns {
+@keyframes home-hero-zoom-out {
   from {
-    transform: scale(1);
+    transform: scale(1.15);
   }
   to {
-    transform: scale(1.12);
+    transform: scale(1);
   }
 }

@@ -9,6 +9,7 @@ import { categories as defaultCategories } from "@/lib/demo-catalog";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useClientPathname } from "@/hooks/use-client-pathname";
+import { useHeroChrome } from "@/hooks/use-hero-chrome";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { usePresence } from "@/hooks/use-presence";
 import { useCart } from "@/store/cart";
@@ -65,28 +66,7 @@ export function SiteHeader({
   const menu = usePresence(menuOpen);
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const home = pathname === null || pathname === "/";
-  const [scrolledPastHero, setScrolledPastHero] = useState(false);
-  const solidHeader = !home || scrolledPastHero;
-  const overlayHeader = home && !solidHeader;
-
-  useEffect(() => {
-    if (!home) return;
-    function sync() {
-      const hero = document.getElementById("home-hero");
-      if (!hero) {
-        setScrolledPastHero(false);
-        return;
-      }
-      setScrolledPastHero(hero.getBoundingClientRect().bottom <= 80);
-    }
-    sync();
-    window.addEventListener("scroll", sync, { passive: true });
-    window.addEventListener("resize", sync);
-    return () => {
-      window.removeEventListener("scroll", sync);
-      window.removeEventListener("resize", sync);
-    };
-  }, [home]);
+  const { solid: solidHeader, overlay: overlayHeader } = useHeroChrome();
 
   useEffect(() => {
     if (!menuOpen) return;
