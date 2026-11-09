@@ -219,6 +219,18 @@
   border-bottom-color: color-mix(in oklch, white 12%, transparent);
 }
 
+.glass-chrome-bottom {
+  background: oklch(from var(--background) l c h / 0.92);
+  border-top: 1px solid color-mix(in oklch, var(--border) 65%, transparent);
+  border-bottom: none;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.dark .glass-chrome-bottom {
+  border-top-color: color-mix(in oklch, white 12%, transparent);
+}
+
 .press {
   transition: transform 140ms var(--ease-out);
 }
@@ -712,4 +724,27 @@
   to {
     transform: scale(1);
   }
+}
+
+@media (max-width: 767px) {
+  #home-hero .home-hero-stage {
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
+  #home-hero .home-hero-slides {
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+  }
+}
+
+html[data-hero-overlay] body {
+  background-color: transparent;
+}
+
+html[data-hero-overlay] body::before {
+  opacity: 0;
 }

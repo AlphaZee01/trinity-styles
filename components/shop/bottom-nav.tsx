@@ -24,8 +24,8 @@ export function BottomNav() {
 
   return (
     <nav
-      className={`fixed inset-x-0 bottom-0 z-40 border-t-0 pb-[env(safe-area-inset-bottom)] transition-[background-color,box-shadow] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:hidden ${
-        overlay ? "bg-transparent" : "glass-chrome"
+      className={`fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] transition-[background-color,box-shadow,border-color] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:hidden ${
+        overlay ? "border-0 bg-transparent shadow-none" : "glass-chrome-bottom"
       }`}
     >
       <ul className="mx-auto grid max-w-lg grid-cols-4">

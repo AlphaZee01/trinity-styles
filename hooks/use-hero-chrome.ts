@@ -11,14 +11,21 @@ export function useHeroChrome() {
   const overlay = home && !pastHero;
 
   useEffect(() => {
-    if (!home) return;
+    if (!home) {
+      document.documentElement.removeAttribute("data-hero-overlay");
+      return;
+    }
     function sync() {
       const hero = document.getElementById("home-hero");
       if (!hero) {
         setPastHero(false);
+        document.documentElement.setAttribute("data-hero-overlay", "true");
         return;
       }
-      setPastHero(hero.getBoundingClientRect().bottom <= 80);
+      const past = hero.getBoundingClientRect().bottom <= 80;
+      setPastHero(past);
+      if (past) document.documentElement.removeAttribute("data-hero-overlay");
+      else document.documentElement.setAttribute("data-hero-overlay", "true");
     }
     sync();
     window.addEventListener("scroll", sync, { passive: true });
@@ -26,6 +33,7 @@ export function useHeroChrome() {
     return () => {
       window.removeEventListener("scroll", sync);
       window.removeEventListener("resize", sync);
+      document.documentElement.removeAttribute("data-hero-overlay");
     };
   }, [home]);
 

@@ -68,9 +68,9 @@ export function HomeHero({ slides }: { slides: string[] }) {
       aria-roledescription="carousel"
       aria-label="Featured looks"
     >
-      <div className="relative flex h-[100svh] max-h-[52rem] min-h-[22rem] items-center justify-center bg-muted sm:h-[min(54svh,40rem)] sm:max-h-none sm:min-h-80">
+      <div className="home-hero-stage relative flex h-[100svh] max-h-[52rem] min-h-[22rem] items-center justify-center bg-transparent sm:bg-muted sm:h-[min(54svh,40rem)] sm:max-h-none sm:min-h-80">
         {count > 0 ? (
-          <div className="absolute inset-0" aria-live="polite">
+          <div className="home-hero-slides absolute inset-0" aria-live="polite">
             {slides.map((src, i) => {
               const active = i === index;
               return (
