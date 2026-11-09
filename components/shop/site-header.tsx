@@ -9,6 +9,7 @@ import { categories as defaultCategories } from "@/lib/demo-catalog";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useClientPathname } from "@/hooks/use-client-pathname";
+import { useHeroChrome } from "@/hooks/use-hero-chrome";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { usePresence } from "@/hooks/use-presence";
 import { useCart } from "@/store/cart";
@@ -19,7 +20,7 @@ const audiences = [
   { href: "/?tab=new", label: "New In" },
 ];
 
-function Mark() {
+function Mark({ overlay = false }: { overlay?: boolean }) {
   return (
     <span className="flex min-w-0 items-center gap-2">
       <span className="relative h-14 w-12 shrink-0 overflow-hidden">
@@ -29,11 +30,13 @@ function Mark() {
           width={779}
           height={841}
           priority
-          className="absolute top-0 left-1/2 h-[128%] w-auto max-w-none -translate-x-1/2"
+          className={`absolute top-0 left-1/2 h-[128%] w-auto max-w-none -translate-x-1/2 ${overlay ? "brightness-0 invert" : ""}`}
         />
       </span>
       <span className="min-w-0 text-left leading-none">
-        <span className="block truncate font-heading text-[13px] tracking-[0.16em] sm:text-sm sm:tracking-[0.2em]">
+        <span
+          className={`block truncate font-heading text-[13px] tracking-[0.16em] sm:text-sm sm:tracking-[0.2em] ${overlay ? "text-white" : ""}`}
+        >
           TRINITY STYLES
         </span>
       </span>
@@ -63,6 +66,7 @@ export function SiteHeader({
   const menu = usePresence(menuOpen);
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const home = pathname === null || pathname === "/";
+  const { solid: solidHeader, overlay: overlayHeader } = useHeroChrome();
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -89,13 +93,21 @@ export function SiteHeader({
 
   return (
     <>
-    <header className="glass-chrome sticky top-0 z-40 pt-[env(safe-area-inset-top)]">
+    <header
+      className={`z-50 pt-[env(safe-area-inset-top)] transition-[background-color,border-color,box-shadow] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none ${
+        home
+          ? overlayHeader
+            ? `fixed inset-x-0 top-0 border-b border-transparent bg-transparent ${searchOpen ? "bg-black/25 backdrop-blur-md" : ""}`
+            : "glass-chrome fixed inset-x-0 top-0"
+          : "glass-chrome sticky top-0"
+      }`}
+    >
       <div className="mx-auto max-w-6xl px-3 sm:px-6">
         <div className="flex h-[4.5rem] items-center gap-1">
           <Link href="/" className="flex min-w-0 flex-1" aria-label="Trinity Styles home">
-            <Mark />
+            <Mark overlay={overlayHeader} />
           </Link>
-          <div className="flex shrink-0 items-center">
+          <div className={`flex shrink-0 items-center ${overlayHeader ? "text-white" : ""}`}>
             <button
               type="button"
               aria-label="Search"
@@ -105,11 +117,15 @@ export function SiteHeader({
             >
               <Search className="size-5" strokeWidth={1.75} />
             </button>
-            <ThemeToggle />
+            <ThemeToggle overlay={overlayHeader} />
             <Link href="/cart" aria-label="Cart" className="press relative grid size-11 place-items-center">
               <ShoppingBag className="size-5" strokeWidth={1.75} />
               {visibleCount > 0 ? (
-                <span className="absolute top-1 right-0 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] leading-4 text-primary-foreground">
+                <span
+                  className={`absolute top-1 right-0 grid min-w-4 place-items-center rounded-full px-1 text-[10px] leading-4 ${
+                    overlayHeader ? "bg-white text-foreground" : "bg-primary text-primary-foreground"
+                  }`}
+                >
                   {visibleCount}
                 </span>
               ) : null}
@@ -128,7 +144,9 @@ export function SiteHeader({
               placeholder="Search the collection"
               enterKeyHint="search"
               aria-label="Search the collection"
-              className="glass h-12 w-full rounded-full px-4 text-base"
+              className={`h-12 w-full rounded-full px-4 text-base ${
+                overlayHeader ? "border border-white/25 bg-black/35 text-white placeholder:text-white/65 backdrop-blur-md" : "glass"
+              }`}
             />
           </form>
         ) : null}

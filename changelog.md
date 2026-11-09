@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-09
+
+- Homepage bottom nav (mobile): hero imagery extends under the safe-area inset; ambient body gradient is hidden while over the hero so no pale strip shows below the transparent nav; solid mode uses `glass-chrome-bottom` (top edge only).
+- Homepage hero: each slide zooms out from 1.15× to 1× over 8s (restarts on slide change); replaces the previous zoom-in Ken Burns; off when `prefers-reduced-motion`.
+- Homepage: transparent fixed header over the hero (white logo and icons) that becomes the solid glass chrome bar after you scroll past the hero; other routes unchanged.
+- Homepage hero slideshow: crossfades through up to five Trinity product photos, auto-advance with swipe and dot indicators; Ken Burns only on the active slide; respects `prefers-reduced-motion`; first slide stays priority for LCP.
+- Homepage hero on mobile: full-viewport cover image, centered headline and copy over a dark gradient, white primary CTA plus a secondary outline button, and a subtle Ken Burns zoom on the photo. Desktop keeps a shorter hero with the same overlay treatment inside the rounded section.
+
 ## 2026-11-08
 
 - Admin products can be deleted from the catalog and from the product form, after a confirmation. A piece that is already on an order stays.

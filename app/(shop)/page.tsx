@@ -2,8 +2,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { Gem, Leaf, Truck } from "lucide-react";
 import { ProductFeed } from "@/components/product/product-feed";
+import { HomeHero } from "@/components/shop/home-hero";
 import { listCategoryNames } from "@/lib/categories";
 import { listProducts } from "@/lib/products";
+import type { ProductWithVariants } from "@/lib/types";
+
+function heroSlides(catalog: ProductWithVariants[]) {
+  const urls: string[] = [];
+  for (const product of catalog) {
+    const src = product.images[0];
+    if (!src || urls.includes(src)) continue;
+    urls.push(src);
+    if (urls.length >= 5) break;
+  }
+  return urls;
+}
 
 const trust = [
   { icon: Leaf, title: "Sustainable materials", detail: "Thoughtfully sourced" },
@@ -27,7 +40,7 @@ export default async function HomePage({
   const audience = tab === "women" || tab === "men" || tab === "new" ? tab : "all";
   const [catalog, newest] = await Promise.all([listProducts(), listProducts({ audience: "new" })]);
   const categories = await listCategoryNames(catalog.map((product) => product.category));
-  const hero = catalog[0];
+  const slides = heroSlides(catalog);
   const products =
     audience === "women"
       ? catalog.filter((product) => product.gender !== "men")
@@ -39,36 +52,7 @@ export default async function HomePage({
 
   return (
     <div className="space-y-10">
-      <section className="relative overflow-hidden rounded-3xl">
-        <div className="relative h-[46svh] min-h-72 bg-muted sm:h-[52svh]">
-          {hero?.images[0] ? (
-            <Image
-              src={hero.images[0]}
-              alt=""
-              fill
-              priority
-              loading="eager"
-              className="object-cover object-[center_20%]"
-              sizes="(max-width: 768px) 100vw, 1152px"
-            />
-          ) : null}
-        </div>
-        <div className="glass absolute inset-x-3 bottom-3 rounded-2xl p-4 sm:inset-x-6 sm:bottom-6 sm:max-w-md sm:p-6">
-          <p className="text-[10px] tracking-[0.18em] uppercase">New collection</p>
-          <h1 className="mt-2 font-heading text-4xl leading-[0.95] tracking-tight text-pretty sm:text-5xl">
-            Elevated essentials
-          </h1>
-          <p className="mt-3 text-sm text-pretty text-muted-foreground">
-            Timeless pieces. Modern silhouettes. Made for the way you live.
-          </p>
-          <Link
-            href="/products"
-            className="press cta-premium mt-4 inline-flex h-12 items-center rounded-full bg-primary px-5 text-sm text-primary-foreground"
-          >
-            Shop the collection
-          </Link>
-        </div>
-      </section>
+      <HomeHero slides={slides} />
 
       <section>
         <div className="mb-4 flex items-end justify-between gap-3">
