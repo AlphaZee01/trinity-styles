@@ -39,34 +39,48 @@ export default async function HomePage({
 
   return (
     <div className="space-y-10">
-      <section className="relative overflow-hidden rounded-3xl">
-        <div className="relative h-[46svh] min-h-72 bg-muted sm:h-[52svh]">
+      <section className="home-hero relative -mx-4 overflow-hidden sm:mx-0 sm:rounded-3xl">
+        <div className="relative flex h-[100svh] max-h-[52rem] min-h-[22rem] items-center justify-center bg-muted sm:h-[min(54svh,40rem)] sm:max-h-none sm:min-h-80">
           {hero?.images[0] ? (
-            <Image
-              src={hero.images[0]}
-              alt=""
-              fill
-              priority
-              loading="eager"
-              className="object-cover object-[center_20%]"
-              sizes="(max-width: 768px) 100vw, 1152px"
-            />
+            <div className="home-hero-media absolute inset-0" aria-hidden>
+              <Image
+                src={hero.images[0]}
+                alt=""
+                fill
+                priority
+                loading="eager"
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 1152px"
+              />
+            </div>
           ) : null}
-        </div>
-        <div className="glass absolute inset-x-3 bottom-3 rounded-2xl p-4 sm:inset-x-6 sm:bottom-6 sm:max-w-md sm:p-6">
-          <p className="text-[10px] tracking-[0.18em] uppercase">New collection</p>
-          <h1 className="mt-2 font-heading text-4xl leading-[0.95] tracking-tight text-pretty sm:text-5xl">
-            Elevated essentials
-          </h1>
-          <p className="mt-3 text-sm text-pretty text-muted-foreground">
-            Timeless pieces. Modern silhouettes. Made for the way you live.
-          </p>
-          <Link
-            href="/products"
-            className="press cta-premium mt-4 inline-flex h-12 items-center rounded-full bg-primary px-5 text-sm text-primary-foreground"
-          >
-            Shop the collection
-          </Link>
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/65 sm:from-black/25 sm:via-black/35 sm:to-black/55"
+            aria-hidden
+          />
+          <div className="relative z-10 mx-auto max-w-md px-6 text-center text-white sm:max-w-xl sm:px-8">
+            <p className="text-[10px] tracking-[0.2em] text-white/80 uppercase sm:text-[11px]">New collection</p>
+            <h1 className="mt-3 font-heading text-[1.875rem] leading-[1.2] tracking-tight text-pretty sm:mt-2 sm:text-5xl sm:leading-[0.95]">
+              Elevated essentials
+            </h1>
+            <p className="mt-3 text-base leading-relaxed text-pretty text-white/88 sm:mt-3 sm:text-sm sm:text-white/85">
+              Timeless pieces. Modern silhouettes. Made for the way you live.
+            </p>
+            <div className="mt-6 flex flex-col items-center gap-3 sm:mt-5 sm:flex-row sm:justify-center">
+              <Link
+                href="/products"
+                className="press inline-flex h-11 min-w-[10.5rem] items-center justify-center rounded-sm bg-white px-5 text-[17px] font-medium text-foreground sm:h-12 sm:rounded-full sm:text-sm"
+              >
+                Shop the collection
+              </Link>
+              <Link
+                href="/?tab=new"
+                className="press inline-flex h-11 min-w-[10.5rem] items-center justify-center rounded-sm border border-white/55 bg-white/10 px-5 text-[17px] font-medium text-white backdrop-blur-sm sm:h-12 sm:rounded-full sm:text-sm"
+              >
+                New arrivals
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

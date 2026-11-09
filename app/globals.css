@@ -688,4 +688,30 @@
   .page-rise {
     animation: none;
   }
+  .home-hero-media img {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Homepage hero — mobile full-bleed cover + slow zoom (Boulevard-inspired treatment) */
+.home-hero-media {
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .home-hero-media img {
+    transform: scale(1);
+    animation: home-hero-ken-burns 18s ease-out infinite alternate;
+    will-change: transform;
+  }
+}
+
+@keyframes home-hero-ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12);
+  }
 }

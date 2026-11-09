@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-09
+
+- Homepage hero on mobile: full-viewport cover image, centered headline and copy over a dark gradient, white primary CTA plus a secondary outline button, and a subtle Ken Burns zoom on the photo. Desktop keeps a shorter hero with the same overlay treatment inside the rounded section.
+
 ## 2026-11-08
 
 - Admin products can be deleted from the catalog and from the product form, after a confirmation. A piece that is already on an order stays.
