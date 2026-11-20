@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CircleHelp, Leaf, ShoppingBag, Truck, Wind } from "lucide-react";
-import { formatGhs } from "@/lib/format";
+import { CircleHelp, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { TryOnPanel } from "@/components/try-on/try-on-panel";
-import { WishlistButton } from "@/components/product/wishlist-button";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { variantPrice } from "@/lib/format";
 import { OfferPrice } from "@/components/product/offer-price";
@@ -42,16 +40,9 @@ function HangerIcon() {
   );
 }
 
-function FeatureIcon({ name }: { name: "leaf" | "wind" | "fit" }) {
-  if (name === "leaf") return <Leaf className="size-5" strokeWidth={1.5} />;
-  if (name === "wind") return <Wind className="size-5" strokeWidth={1.5} />;
-  return <HangerIcon />;
-}
-
 export function AddToCart({
   product,
   isNew,
-  shippingFeeGhs,
   sizeGuideNote,
   tryOnEnabled = true,
   signedIn = false,
@@ -213,29 +204,6 @@ export function AddToCart({
         />
         {added ? "Added" : "Add to bag"}
       </button>
-
-      <div className="grid grid-cols-2 gap-2">
-        <WishlistButton productId={product.id} productName={product.name} />
-        <Link
-          href="/shipping-returns"
-          className="glass press flex h-12 items-center justify-center gap-2 rounded-xl px-2 text-center text-sm"
-        >
-          <Truck className="size-4 shrink-0" strokeWidth={1.75} />
-          Delivery from {formatGhs(shippingFeeGhs)}
-        </Link>
-      </div>
-
-      <ul className="glass grid grid-cols-3 divide-x divide-border rounded-2xl py-3">
-        {notes.map((note) => (
-          <li key={note.title} className="px-2 text-center">
-            <span className="mx-auto grid size-6 place-items-center text-foreground">
-              <FeatureIcon name={note.icon} />
-            </span>
-            <p className="mt-1 text-xs">{note.title}</p>
-            <p className="text-[11px] text-muted-foreground">{note.detail}</p>
-          </li>
-        ))}
-      </ul>
 
       {signedIn ? (
         <TryOnPanel product={product} open={tryOnOpen} onOpenChange={setTryOnOpen} onAddToBag={addToBag} />

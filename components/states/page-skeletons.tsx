@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function blocks(count: number, className: string) {
@@ -30,10 +31,15 @@ export function CatalogSkeleton() {
   );
 }
 
-export function ProductSkeleton() {
+export function ProductSkeleton({ transitionName }: { transitionName?: string }) {
   return (
     <div className="mx-auto max-w-md space-y-5">
-      <Skeleton className="aspect-[3/4] w-full rounded-3xl" />
+      <ViewTransition name={transitionName} share="morph" exit="morph" enter="morph" update="none">
+        <Skeleton
+          className="aspect-[3/4] w-full rounded-3xl"
+          style={transitionName ? { viewTransitionName: transitionName, viewTransitionClass: "morph" } : undefined}
+        />
+      </ViewTransition>
       <Skeleton className="h-10 w-3/4" />
       <Skeleton className="h-6 w-24" />
       <div className="flex gap-2">{blocks(3, "h-11 w-14 rounded-full")}</div>

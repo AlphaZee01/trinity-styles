@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type UIEvent } from "react";
+import { useRef, useState, ViewTransition, type UIEvent } from "react";
 import Image from "next/image";
 import { WishlistButton } from "@/components/product/wishlist-button";
 
@@ -8,10 +8,12 @@ export function ProductGallery({
   images,
   name,
   productId,
+  transitionName,
 }: {
   images: string[];
   name: string;
   productId: string;
+  transitionName?: string;
 }) {
   const scroller = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -33,25 +35,30 @@ export function ProductGallery({
   return (
     <div>
       <div className="relative">
-        <div
-          ref={scroller}
-          onScroll={onScroll}
-          className="glass flex aspect-[3/4] w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-muted [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {images.map((src, itemIndex) => (
-            <div key={src} className="relative h-full min-w-full shrink-0 snap-center">
-              <Image
-                src={src}
-                alt={`${name}, photo ${itemIndex + 1}`}
-                fill
-                priority={itemIndex === 0}
-                loading={itemIndex === 0 ? "eager" : "lazy"}
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 448px"
-              />
-            </div>
-          ))}
-        </div>
+        <ViewTransition name={transitionName} share="morph" exit="morph" enter="morph" update="none">
+          <div
+            ref={scroller}
+            data-product-photo=""
+        data-product-destination=""
+            onScroll={onScroll}
+            style={transitionName ? { viewTransitionName: transitionName, viewTransitionClass: "morph" } : undefined}
+            className="glass flex aspect-[3/4] w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-muted [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {images.map((src, itemIndex) => (
+              <div key={src} className="relative h-full min-w-full shrink-0 snap-center">
+                <Image
+                  src={src}
+                  alt={`${name}, photo ${itemIndex + 1}`}
+                  fill
+                  priority={itemIndex === 0}
+                  loading={itemIndex === 0 ? "eager" : "lazy"}
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 448px"
+                />
+              </div>
+            ))}
+          </div>
+        </ViewTransition>
         <WishlistButton productId={productId} productName={name} appearance="float" />
       </div>
       {images.length > 1 ? (

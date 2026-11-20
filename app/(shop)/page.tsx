@@ -1,9 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Gem, Leaf, Truck } from "lucide-react";
-import { ProductFeed } from "@/components/product/product-feed";
 import { HomeHero } from "@/components/shop/home-hero";
-import { listCategoryNames } from "@/lib/categories";
+import { ProductOrbit, type OrbitProduct } from "@/components/shop/product-orbit";
+import { ProductRail } from "@/components/shop/product-rail";
 import { listProducts } from "@/lib/products";
 import type { ProductWithVariants } from "@/lib/types";
 
@@ -18,11 +16,19 @@ function heroSlides(catalog: ProductWithVariants[]) {
   return urls;
 }
 
-const trust = [
-  { icon: Leaf, title: "Sustainable materials", detail: "Thoughtfully sourced" },
-  { icon: Gem, title: "Premium quality", detail: "Crafted to last" },
-  { icon: Truck, title: "Complimentary shipping", detail: "On orders over GH₵150" },
-];
+function toOrbitProduct(product: ProductWithVariants): OrbitProduct {
+  const prices = product.product_variants.map((variant) => variant.price_override ?? product.base_price);
+  const price = Math.min(...prices, product.base_price);
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    image: product.images[0] ?? null,
+    price,
+    compareAt: price < product.base_price ? product.base_price : null,
+    category: product.category,
+  };
+}
 
 const audiences = [
   { id: "all", label: "All", href: "/" },
@@ -39,8 +45,8 @@ export default async function HomePage({
   const { tab } = await searchParams;
   const audience = tab === "women" || tab === "men" || tab === "new" ? tab : "all";
   const [catalog, newest] = await Promise.all([listProducts(), listProducts({ audience: "new" })]);
-  const categories = await listCategoryNames(catalog.map((product) => product.category));
   const slides = heroSlides(catalog);
+  const orbitProducts = catalog.map(toOrbitProduct);
   const products =
     audience === "women"
       ? catalog.filter((product) => product.gender !== "men")
@@ -54,44 +60,19 @@ export default async function HomePage({
     <div className="space-y-10">
       <HomeHero slides={slides} />
 
-      <section>
-        <div className="mb-4 flex items-end justify-between gap-3">
-          <h2 className="font-heading text-2xl tracking-tight">Categories</h2>
-          <Link href="/products" className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
-            View all
-          </Link>
-        </div>
-        <div className="flex gap-3 overflow-x-auto pb-1">
-          {categories.map((category) => {
-            const sample = catalog.find((product) => product.category === category);
-            return (
-              <Link
-                key={category}
-                href={`/products?category=${encodeURIComponent(category)}`}
-                className="press relative h-36 w-40 shrink-0 overflow-hidden rounded-2xl bg-muted"
-              >
-                {sample?.images[0] ? (
-                  <Image src={sample.images[0]} alt="" fill sizes="160px" className="object-cover" />
-                ) : null}
-                <span className="glass absolute inset-x-2 bottom-2 rounded-xl px-3 py-2 font-heading text-lg leading-none">
-                  {category}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+      <ProductOrbit products={orbitProducts} />
 
       <section>
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <h2 className="font-heading text-2xl tracking-tight">Favorites</h2>
-          <div className="flex flex-wrap gap-2" aria-label="Filter favorites">
+          <h2 className="font-heading text-2xl tracking-tight">All products</h2>
+          <div className="flex flex-wrap gap-2" aria-label="Filter products">
             {audiences.map((item) => {
               const active = item.id === audience;
               return (
                 <Link
                   key={item.id}
                   href={item.href}
+                  scroll={false}
                   aria-current={active ? "page" : undefined}
                   className={`press flex h-10 items-center rounded-full px-4 text-sm ${
                     active ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"
@@ -103,21 +84,7 @@ export default async function HomePage({
             })}
           </div>
         </div>
-        <ProductFeed key={audience} products={products} newIds={audience === "new" ? newest.map((product) => product.id) : []} />
-      </section>
-
-      <section className="glass grid gap-4 rounded-3xl p-4 sm:grid-cols-4 sm:p-6">
-        {trust.map((item) => (
-          <div key={item.title} className="min-w-0">
-            <item.icon className="size-4 text-primary" strokeWidth={1.75} />
-            <p className="mt-2 text-[11px] tracking-[0.12em] uppercase">{item.title}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
-          </div>
-        ))}
-        <div className="min-w-0">
-          <p className="text-[11px] tracking-[0.12em] text-primary uppercase">Easy returns</p>
-          <p className="mt-2 text-sm text-muted-foreground">Within 30 days. No fuss.</p>
-        </div>
+        <ProductRail key={audience} products={products.map(toOrbitProduct)} newIds={audience === "new" ? newest.map((product) => product.id) : []} />
       </section>
     </div>
   );

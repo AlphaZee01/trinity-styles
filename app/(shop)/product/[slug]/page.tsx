@@ -25,7 +25,12 @@ export default async function ProductPage({
 
   return (
     <div className="mx-auto max-w-md">
-      <ProductGallery images={product.images} name={product.name} productId={product.id} />
+      <ProductGallery
+        images={product.images}
+        name={product.name}
+        productId={product.id}
+        transitionName={`product-${product.slug}`}
+      />
       <div className="pt-5">
         <AddToCart
           product={product}

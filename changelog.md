@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-20
+
+- Product page: the wishlist and delivery row, and the three fabric notes under it, are removed. The photo now waits until the product gallery is on screen, then moves into that frame over 280ms.
+- Opening a product moves that photo into the product gallery over 280ms. Reduced motion skips the movement.
+- Homepage: the trust strip above the footer is removed. The product rail is now the last section before the footer, titled All products, with the curved rail line hidden.
+- Homepage Favorites is a curved product rail. Neighboring photos sit 1.55 card-widths apart so the images do not overlap. Tapping a photo morphs into that product’s gallery. Audience filters stay on the page without scrolling to the top.
+- Homepage: the Categories row is replaced by a Collection wheel of active catalog products. Each card is the product photo; the front product shows name, category, GH₵ price (crossed-out base price on an offer), and a View product button. Drag follows the finger, snaps with momentum, and side cards rotate to the front. Eight or fewer products use dots; more use a counter. One product is a plain card, and an empty catalog hides the section.
+
 ## 2026-11-09
 
 - Homepage bottom nav (mobile): hero imagery extends under the safe-area inset; ambient body gradient is hidden while over the hero so no pale strip shows below the transparent nav; solid mode uses `glass-chrome-bottom` (top edge only).

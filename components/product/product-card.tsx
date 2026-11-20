@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OfferPrice } from "@/components/product/offer-price";
+import { ProductPhoto } from "@/components/product/product-photo";
 import { swatchColor } from "@/lib/swatches";
 import type { ProductWithVariants } from "@/lib/types";
 
@@ -20,7 +21,7 @@ export function ProductCard({
   return (
     <article className="min-w-0">
       <Link href={`/product/${product.slug}`} className="press group block">
-        <div className="glass relative aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
+        <ProductPhoto slug={product.slug} named className="glass relative aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
           {image ? (
             <Image
               src={image}
@@ -41,7 +42,7 @@ export function ProductCard({
               New
             </span>
           ) : null}
-        </div>
+        </ProductPhoto>
         <div className="mt-3 space-y-1">
           <h3 className="font-heading text-lg leading-tight tracking-tight text-pretty">{product.name}</h3>
           <OfferPrice price={min} compareAt={compareAt} saleClassName="text-sm" />
